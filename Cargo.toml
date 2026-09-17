@@ -1,0 +1,17 @@
+[workspace]
+members = ["src-tauri", "wingauge-core"]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = ""
+repository = "https://github.com/JunsonJack/WinGauge"
+description = "Windows 托盘悬浮系统监控面板"
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

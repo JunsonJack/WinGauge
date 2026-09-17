@@ -1,0 +1,42 @@
+:root {
+  --bg: rgba(28, 28, 30, 0.92);
+  --bg-card: rgba(44, 44, 46, 0.72);
+  --border: rgba(255, 255, 255, 0.08);
+  --text: rgba(255, 255, 255, 0.94);
+  --text-dim: rgba(255, 255, 255, 0.55);
+  --accent: #34c759;
+  --warn: #ffd60a;
+  --bad: #ff453a;
+  --radius: 14px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+  color: var(--text);
+  font-family: 'Segoe UI', 'Microsoft YaHei', system-ui, sans-serif;
+  font-size: 13px;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  gap: 8px;
+  /* 外层透明 + 内层圆角，避免透明窗口四角露出直角 */
+  background: var(--bg);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(20px);
+}

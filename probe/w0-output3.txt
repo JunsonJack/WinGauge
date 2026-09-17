@@ -1,0 +1,95 @@
+﻿=== W0 第三轮 22:24:16 ===
+实例存在性: GAMEZONE_DATA=True  Lfc_thermal_interface=True  FAN_METHOD=True
+
+---- 采样点: 空载基线  (22:24:16) ----
+GAMEZONE GetCPUTemp        => {"Data":0,"ReturnValue":true,"PSComputerName":null}
+GAMEZONE GetGPUTemp        => {"Data":0,"ReturnValue":true,"PSComputerName":null}
+GAMEZONE GetIRTemp         => ERR: 无效的对象 
+GAMEZONE GetFanCount       => ERR: 无效的对象 
+GAMEZONE GetFan1Speed      => ERR: 无效的对象 
+GAMEZONE GetFan2Speed      => ERR: 无效的对象 
+GAMEZONE GetFanMaxSpeed    => ERR: 无法在类“LENOVO_GAMEZONE_DATA”的方法“GetFanMaxSpeed”中找到参数“FanNumber”。
+GAMEZONE GetThermalMode    => {"Data":2,"ReturnValue":true,"PSComputerName":null}
+Lfc GetCPUTemperature      => ERR: 无效的对象 
+Lfc GetEnvironmentTemp     => ERR: 无效的对象 
+Lfc GetSSDTemperature      => ERR: 无效的对象 
+Lfc GetRAMTemperature      => ERR: 无效的对象 
+FAN_METHOD CurrentFanSpeed => ERR: 无效的参数 
+FAN_METHOD SensorTemp      => ERR: 无效的参数 
+ACPI ThermalZone           => 2732
+WMI CPU _Total usage       => 35
+
+>>> 制造 CPU 负载：4 个后台 busy loop，持续 25 秒
+
+---- 采样点: 负载中(+12s)  (22:24:31) ----
+GAMEZONE GetCPUTemp        => {"Data":0,"ReturnValue":true,"PSComputerName":null}
+GAMEZONE GetGPUTemp        => {"Data":0,"ReturnValue":true,"PSComputerName":null}
+GAMEZONE GetIRTemp         => ERR: 无效的对象 
+GAMEZONE GetFanCount       => ERR: 无效的对象 
+GAMEZONE GetFan1Speed      => ERR: 无效的对象 
+GAMEZONE GetFan2Speed      => ERR: 无效的对象 
+GAMEZONE GetFanMaxSpeed    => ERR: 无法在类“LENOVO_GAMEZONE_DATA”的方法“GetFanMaxSpeed”中找到参数“FanNumber”。
+GAMEZONE GetThermalMode    => {"Data":2,"ReturnValue":true,"PSComputerName":null}
+Lfc GetCPUTemperature      => ERR: 无效的对象 
+Lfc GetEnvironmentTemp     => ERR: 无效的对象 
+Lfc GetSSDTemperature      => ERR: 无效的对象 
+Lfc GetRAMTemperature      => ERR: 无效的对象 
+FAN_METHOD CurrentFanSpeed => ERR: 无效的参数 
+FAN_METHOD SensorTemp      => ERR: 无效的参数 
+ACPI ThermalZone           => 2732
+WMI CPU _Total usage       => 63
+
+---- 采样点: 负载中(+22s)  (22:24:42) ----
+GAMEZONE GetCPUTemp        => {"Data":0,"ReturnValue":true,"PSComputerName":null}
+GAMEZONE GetGPUTemp        => {"Data":0,"ReturnValue":true,"PSComputerName":null}
+GAMEZONE GetIRTemp         => ERR: 无效的对象 
+GAMEZONE GetFanCount       => ERR: 无效的对象 
+GAMEZONE GetFan1Speed      => ERR: 无效的对象 
+GAMEZONE GetFan2Speed      => ERR: 无效的对象 
+GAMEZONE GetFanMaxSpeed    => ERR: 无法在类“LENOVO_GAMEZONE_DATA”的方法“GetFanMaxSpeed”中找到参数“FanNumber”。
+GAMEZONE GetThermalMode    => {"Data":2,"ReturnValue":true,"PSComputerName":null}
+Lfc GetCPUTemperature      => ERR: 无效的对象 
+Lfc GetEnvironmentTemp     => ERR: 无效的对象 
+Lfc GetSSDTemperature      => ERR: 无效的对象 
+Lfc GetRAMTemperature      => ERR: 无效的对象 
+FAN_METHOD CurrentFanSpeed => ERR: 无效的参数 
+FAN_METHOD SensorTemp      => ERR: 无效的参数 
+ACPI ThermalZone           => 2732
+WMI CPU _Total usage       => 50
+
+---- 采样点: 撤载后(+8s，应回落)  (22:24:50) ----
+GAMEZONE GetCPUTemp        => {"Data":0,"ReturnValue":true,"PSComputerName":null}
+GAMEZONE GetGPUTemp        => {"Data":0,"ReturnValue":true,"PSComputerName":null}
+GAMEZONE GetIRTemp         => ERR: 无效的对象 
+GAMEZONE GetFanCount       => ERR: 无效的对象 
+GAMEZONE GetFan1Speed      => ERR: 无效的对象 
+GAMEZONE GetFan2Speed      => ERR: 无效的对象 
+GAMEZONE GetFanMaxSpeed    => ERR: 无法在类“LENOVO_GAMEZONE_DATA”的方法“GetFanMaxSpeed”中找到参数“FanNumber”。
+GAMEZONE GetThermalMode    => {"Data":2,"ReturnValue":true,"PSComputerName":null}
+Lfc GetCPUTemperature      => ERR: 无效的对象 
+Lfc GetEnvironmentTemp     => ERR: 无效的对象 
+Lfc GetSSDTemperature      => ERR: 无效的对象 
+Lfc GetRAMTemperature      => ERR: 无效的对象 
+FAN_METHOD CurrentFanSpeed => ERR: 无效的参数 
+FAN_METHOD SensorTemp      => ERR: 无效的参数 
+ACPI ThermalZone           => 2732
+WMI CPU _Total usage       => 9
+
+### 网络计数源补测
+-- Get-NetAdapterStatistics（不加过滤）--
+
+Name                               ifIndex OperationalStatus ReceivedBytes SentBytes
+----                               ------- ----------------- ------------- ---------
+OpenVPN Connect DCO Adapter                                              0         0
+本地连接* 2                                                              70813     84729
+WLAN                                                                 66359     39165
+以太网 3                                                           2271199562 668269669
+vEthernet (Default Switch)                                               0   3383195
+vEthernet (WSL (Hyper-V firewall))                                    2960   3297337
+
+
+-- Get-NetIPInterface + ifIndex 主接口判定 --
+默认路由 ifIndex=19 alias=以太网 3
+该接口累计 RX= TX=  →  两次采样差值即为速率
+
+=== 第三轮结束 ===

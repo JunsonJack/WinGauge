@@ -1,0 +1,24 @@
+=== sysinfo sensor-probe probe ===
+[identity] host=Some("贾克杰森") os=Some("11 (26200)") long_os=Some("Windows 11 Pro") kernel=Some("26200") arch="x86_64"
+[identity] uptime=0d 13h 2m boot_time=1789522073
+[cpu] System::new_all() 冷启动耗时 1.8014012s
+[cpu] 第0次 refresh_cpu_all=0ms refresh_memory=0ms global=60.5% cores=16
+[cpu] 第1次 refresh_cpu_all=0ms refresh_memory=0ms global=46.2% cores=16
+[cpu] 第2次 refresh_cpu_all=0ms refresh_memory=0ms global=41.0% cores=16
+[cpu] 第3次 refresh_cpu_all=0ms refresh_memory=0ms global=34.7% cores=16
+[cpu] 第4次 refresh_cpu_all=0ms refresh_memory=0ms global=41.1% cores=16
+[cpu] 每核: CPU 1=57 CPU 2=14 CPU 3=59 CPU 4=10 CPU 5=59 CPU 6=4 CPU 7=58 CPU 8=0 CPU 9=34 CPU 10=46 CPU 11=45 CPU 12=36 CPU 13=57 CPU 14=54 CPU 15=65 CPU 16=59 
+[mem] total=42.7GB used=31.0GB pct=72.4% | swap total=35.2GB used=10.2GB
+[thermal] 首次枚举耗时 67.3757ms，传感器数 = 1
+[thermal] label="Computer" temp=Some(-0.1499939) max=Some(-0.1499939) critical=Some(209.85)
+[thermal] 后续 refresh 耗时 4.9706ms
+[disk] 枚举耗时 2.1051ms 数量=4
+[disk] name="Windows-SSD" fs="NTFS" mount="C:\\" removable=false total=405GB used=86.4%
+[disk] name="新加卷" fs="NTFS" mount="G:\\" removable=false total=105GB used=26.8%
+[disk] name="新加卷" fs="NTFS" mount="E:\\" removable=false total=524GB used=46.7%
+[disk] name="新加卷" fs="NTFS" mount="F:\\" removable=false total=500GB used=73.1%
+[net] 接口数 = 7
+[net] 接口清单: VMware Network Adapter VMnet1 | VMware Network Adapter VMnet8 | vEthernet (Default Switch) | vEthernet (WSL (Hyper-V firewall)) | 以太网 3 | 本地连接* 2 | 本地连接* 2-Native WiFi Filter Driver-0000
+[net] refresh 耗时 25.046ms
+[net] 以太网 3: 31.5 KB/s down, 48.0 KB/s up
+=== probe end ===

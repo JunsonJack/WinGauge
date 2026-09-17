@@ -1,0 +1,249 @@
+=== WinGauge W0 探测  2026-09-16 22:15:00 ===
+进程 elevated(管理员) = True
+
+### identity
+
+
+Manufacturer  : LENOVO
+Model         : 82TF
+HostName      : 贾克杰森
+OS            : Microsoft Windows 11 专业版 10.0.26200 build 26200
+CPUName       : 12th Gen Intel(R) Core(TM) i5-12500H
+CoresLogical  : 16
+CoresPhysical : 12
+RamGB         : 39.8
+Uptime        : 12:47:09.83
+
+
+
+--- (identity => OK, 耗时 2450 ms)
+
+### cpu-usage
+
+Name   PercentProcessorTime PercentUserTime PercentPrivilegedTime
+----   -------------------- --------------- ---------------------
+0                        75              36                    36
+1                        50              18                    12
+10                       75              36                    36
+11                       44              12                    30
+12                       26              12                    12
+13                       38               6                    24
+14                       44              30                    12
+15                       81              55                    24
+2                        44              36                     6
+3                        26               6                     6
+4                        69              43                    24
+5                        44              24                     6
+6                        56              36                    18
+7                        32               6                     6
+8                        26               6                    18
+9                        38               6                    30
+_Total                   48              23                    19
+
+
+↑  locale-independent 的 WMI 性能类；_Total 行为总使用率
+--- (cpu-usage => OK, 耗时 6813 ms)
+
+### cpu-queue
+
+
+Name                 : 
+ProcessorQueueLength : 1
+Processes            : 587
+Threads              : 11334
+
+
+
+--- (cpu-queue => OK, 耗时 314 ms)
+
+### pdh-english-path
+PDH 英文路径可用: 47.2702016735149
+--- (pdh-english-path => OK, 耗时 1754 ms)
+
+### pdh-localized-path
+PDH \System\... 可用: 0
+--- (pdh-localized-path => OK, 耗时 1065 ms)
+
+### memory
+
+
+PhysicalTotalGB : 39.81
+PhysicalFreeGB  : 11.7
+PhysicalUsedPct : 70.6
+CommitLimitGB   : 72.57
+CommitUsedGB    : 48.21
+
+
+
+--- (memory => OK, 耗时 660 ms)
+
+### pagefile
+
+Name            AllocatedBaseSize CurrentUsage PeakUsage
+----            ----------------- ------------ ---------
+C:\pagefile.sys             33542          295       298
+
+
+--- (pagefile => OK, 耗时 90 ms)
+
+### thermal-msacpi
+
+Instance                KelvinTenths Celsius
+--------                ------------ -------
+ACPI\ThermalZone\TZ00_0         2732     0.1
+
+
+--- (thermal-msacpi => OK, 耗时 40 ms)
+
+### thermal-msft-zone
+FAIL: 无效类 
+--- (thermal-msft-zone => FAIL, 耗时 50 ms)
+
+### thermal-probe-class
+（Win32_TemperatureProbe 在多数现代机型上为空）
+--- (thermal-probe-class => OK, 耗时 10 ms)
+
+### thermal-fan-classscan
+root\wmi  class: LENOVO_GAMEZONE_SMART_FAN_SETTING_EVENT
+root\wmi  class: LENOVO_GAMEZONE_SMART_FAN_MODE_EVENT
+root\wmi  class: KernelThermalPolicyChange
+root\wmi  class: LENOVO_GAMEZONE_TEMP_EVENT
+root\wmi  class: LENOVO_GAMEZONE_THERMAL_MODE_EVENT
+root\wmi  class: LENOVO_GAMEZONE_FAN_COOLING_EVENT
+root\wmi  class: KernelThermalConstraintChange
+root\wmi  class: LENOVO_GAMEZONE_GPU_TEMP_EVENT
+root\wmi  class: LENOVO_FAN_TABLE_DATA
+root\wmi  class: LENOVO_FAN_METHOD
+root\wmi  class: LENOVO_FAN_MAX_SPEED_DATA
+root\wmi  class: Lfc_thermal_interface
+root\wmi  class: MSNdis_80211_NumberOfAntennas
+root\wmi  class: BatteryTemperature
+root\wmi  class: MSAcpi_ThermalZoneTemperature
+root\cimv2 class: Win32_TemperatureProbe
+root\cimv2 class: Win32_Battery
+root\cimv2 class: Win32_Fan
+--- (thermal-fan-classscan => OK, 耗时 1056 ms)
+
+### fan
+
+Name           DesiredSpeed ActualSpeed
+----           ------------ -----------
+Cooling Device                         
+
+
+--- (fan => OK, 耗时 19 ms)
+
+### net-adapters
+
+Name                               InterfaceDescription                       ifIndex Status       LinkSpeed
+----                               --------------------                       ------- ------       ---------
+OpenVPN Connect DCO Adapter        OpenVPN Data Channel Offload                    24 Disconnected 1 Gbps   
+本地连接* 2                            Microsoft Wi-Fi Direct Virtual Adapter #2       23 Up           72.2 Mbps
+VMware Network Adapter VMnet8      VMware Virtual Ethernet Adapter for VMnet8      22 Up           100 Mbps 
+WLAN                               Intel(R) Wi-Fi 6E AX211 160MHz                  21 Disconnected 574 Mbps 
+蓝牙网络连接                             Bluetooth Device (Personal Area Network)        20 Disconnected 3 Mbps   
+以太网 3                              Realtek USB GbE Family Controller               19 Up           1 Gbps   
+VMware Network Adapter VMnet1      VMware Virtual Ethernet Adapter for VMnet1      14 Up           100 Mbps 
+本地连接                               TAP-Windows Adapter V9 for OpenVPN Connect      13 Disconnected 1 Gbps   
+vEthernet (Default Switch)         Hyper-V Virtual Ethernet Adapter                43 Up           10 Gbps  
+以太网 2                              Sangfor SSL VPN CS Support System VNIC           3 Disconnected 10 Mbps  
+vEthernet (WSL (Hyper-V firewall)) Hyper-V Virtual Ethernet Adapter #2             60 Up           10 Gbps  
+
+
+--- (net-adapters => OK, 耗时 1747 ms)
+
+### net-throughput
+
+Name                              BytesReceivedPersec BytesSentPersec BytesTotalPersec
+----                              ------------------- --------------- ----------------
+Intel[R] Wi-Fi 6E AX211 160MHz                      0               0                0
+Realtek USB FE Family Controller                    0               0                0
+Realtek USB GbE Family Controller               18213           37131            55345
+
+
+↑  Name 形如 'Intel..._0'，需要与 Get-NetAdapter 的 ifIndex 做映射
+--- (net-throughput => OK, 耗时 310 ms)
+
+### net-default-route
+
+ifIndex InterfaceAlias NextHop       RouteMetric
+------- -------------- -------       -----------
+     19 以太网 3          10.10.112.254           0
+     21 WLAN           10.10.114.254          50
+
+
+--- (net-default-route => OK, 耗时 1205 ms)
+
+### disk-capacity
+
+Device SizeGB FreeGB UsedPct FileSystem
+------ ------ ------ ------- ----------
+C:        377     52    86.3 NTFS      
+E:        488    261    46.6 NTFS      
+F:        466    125    73.1 NTFS      
+G:         98     71    26.8 NTFS      
+
+
+--- (disk-capacity => OK, 耗时 38 ms)
+
+### disk-activity
+
+Name    PercentDiskTime DiskReadBytesPersec DiskWriteBytesPersec
+----    --------------- ------------------- --------------------
+0 C: G:               0                   0                    0
+1 E: F:               0                   0                    0
+_Total                0                   0                    0
+
+
+--- (disk-activity => OK, 耗时 296 ms)
+
+### disk-smart
+
+FriendlyName               MediaType HealthStatus OperationalStatus          Size
+------------               --------- ------------ -----------------          ----
+SAMSUNG MZVL21T0HCLR-00B00 SSD       Healthy      OK                1024209543168
+SAMSUNG MZVL2512HCJQ-00BL2 SSD       Healthy      OK                 512110190592
+
+
+--- (disk-smart => OK, 耗时 2418 ms)
+
+### disk-reliability
+FAIL: 无法使用指定的命名参数解析参数集。
+--- (disk-reliability => FAIL, 耗时 12 ms)
+
+### disk-temperature-wmi
+FAIL: 无效类 
+--- (disk-temperature-wmi => FAIL, 耗时 27 ms)
+
+### input-hooks-feasibility
+全局低级钩子 WH_KEYBOARD_LL / WH_MOUSE_LL 需 Win32 SetWindowsHookEx，纯 Rust windows-rs 可实现。
+本项记录：当前进程是否 elevated = True（elevated 进程对更高完整性窗口读不到，反之正常）
+UAC EnableLUA = 0
+--- (input-hooks-feasibility => OK, 耗时 62 ms)
+
+### battery
+
+
+BatteryStatus            : 2
+EstimatedChargeRemaining : 98
+
+
+
+（台式机通常无电池实例）
+--- (battery => OK, 耗时 61 ms)
+
+### gpu
+
+Name                                  AdapterRAM DriverVersion
+----                                  ---------- -------------
+OrayIddDriver Device                             17.50.19.949 
+NVIDIA GeForce RTX 3050 Ti Laptop GPU 4293918720 31.0.15.4692 
+
+
+--- (gpu => OK, 耗时 3270 ms)
+
+### desktop-metrics
+FAIL: 找不到类型 [Screen]。
+--- (desktop-metrics => FAIL, 耗时 19 ms)
+
+=== 探测结束 ===

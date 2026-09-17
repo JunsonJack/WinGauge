@@ -1,0 +1,122 @@
+﻿=== W0 第二轮探测 22:17:25 ===
+
+### lenovo-gamzone-classes
+LENOVO_GAMEZONE_POWER_CHARGE_MODE_EVENT  | methods: -
+LENOVO_GAMEZONE_THERMAL_MODE_EVENT  | methods: -
+LENOVO_UTILITY_EVENT  | methods: -
+LENOVO_GAMEZONE_SMART_FAN_MODE_EVENT  | methods: -
+LENOVO_AC_PD_EVENT  | methods: -
+LENOVO_LIGHTING_EVENT  | methods: -
+LENOVO_GAMEZONE_SMART_FAN_SETTING_EVENT  | methods: -
+LENOVO_GAMEZONE_KEYLOCK_STATUS_EVENT  | methods: -
+Lfc_EventULong  | methods: -
+LENOVO_SR_EVENT  | methods: -
+LENOVO_GAMEZONE_TEMP_EVENT  | methods: -
+LENOVO_SUPERKEY_EVENT  | methods: -
+LENOVO_GAMEZONE_LIGHT_PROFILE_CHANGE_EVENT  | methods: -
+LENOVO_GAMEZONE_OC_EVENT  | methods: -
+LENOVO_GAMEZONE_FAN_COOLING_EVENT  | methods: -
+LENOVO_GAMEZONE_GPU_TEMP_EVENT  | methods: -
+LENOVO_GAMEZONE_DATA  | methods: GetIRTemp,GetThermalTableID,SetThermalTableID,IsSupportGpuOC,GetGpuGpsState,SetGpuGpsState,GetFanCount,GetFan1Speed,GetFan2Speed,GetFanMaxSpeed,GetVersion,IsSupportFanCooling,SetFanCooling,IsSupportCpuOC,IsBIOSSupportOC,SetBIOSOC,GetTriggerTemperatureValue,GetCPUTemp,GetGPUTemp,GetFanCoolingStatus,IsSupportDisableWinKey,SetWinKeyStatus,GetWinKeyStatus,IsSupportDisableTP,SetTPStatus,GetTPStatus,GetGPUPow,GetGPUOCPow,GetGPUOCType,GetKeyboardfeaturelist,GetMemoryOCInfo,IsSupportWaterCooling,SetWaterCoolingStatus,GetWaterCoolingStatus,IsSupportLightingFeature,SetKeyboardLight,GetKeyboardLight,GetMacrokeyScancode,GetMacrokeyCount,IsSupportGSync,GetGSyncStatus,SetGSyncStatus,IsSupportSmartFan,SetSmartFanMode,GetSmartFanMode,GetSmartFanSetting,GetPowerChargeMode,GetProductInfo,IsSupportOD,GetODStatus,SetODStatus,SetLightControlOwner,SetDDSControlOwner,IsRestoreOCValue,GetThermalMode,GetBIOSOCMode,SetIntelligentSubMode,GetIntelligentSubMode,GetHardwareInfoSupportVersion,GetCpuFrequency,GetLearningProfileCount,IsACFitForOC,IsSupportIGPUMode,GetIGPUModeStatus,SetIGPUModeStatus,NotifyDGPUStatus,IsChangedYLog,GetDGPUHWId
+LENOVO_LIGHTING_DATA  | methods: -
+LENOVO_UTILITY_DATA  | methods: GetIfSupportOrVersion
+LENOVO_OTHER_METHOD  | methods: GetDeviceType,GetSupportThermalMode,GetCustomModeAbility,Set_Custom_Mode_Status,Get_Legion_Device_Support_Feature,Get_Device_Current_Support_Feature,Set_Device_Current_Support_Feature,Get_Support_LegionZone_Version,Set_DGPU_Device_Status,Get_DGPU_Device_DIDVID,Get_AC_PD_Status,Set_DGPU_Whisper_Mode
+LENOVO_INTELLIGENT_OP_LIST  | methods: -
+LENOVO_DEFAULT_VALUE_IN_DIFFERENT_MODE_DATA  | methods: -
+LENOVO_CPU_METHOD  | methods: CPU_Get_OC_Status,CPU_Set_OC_Status,CPU_Get_ShortTerm_PowerLimit,CPU_Set_ShortTerm_PowerLimit,CPU_Get_LongTerm_PowerLimit,CPU_Set_LongTerm_PowerLimit,CPU_Get_Default_PowerLimit,CPU_Get_Peak_PowerLimit,CPU_Set_Peak_PowerLimit,CPU_Get_Temperature_Control,CPU_Set_Temperature_Control,Get_APU_sPPT_PowerLimit,Set_APU_sPPT_PowerLimit,CPU_Set_OC_Data,CPU_Get_Support_OC_Status,CPU_Get_Cross_Loading_PowerLimit,CPU_Set_Cross_Loading_PowerLimit
+LENOVO_FAN_TABLE_DATA  | methods: -
+LENOVO_GAMEZONE_CPU_OC_DATA  | methods: -
+LENOVO_GPU_METHOD  | methods: GPU_Get_OC_Status,GPU_Set_OC_Status,GPU_Get_PPAB_PowerLimit,GPU_Set_PPAB_PowerLimit,GPU_Get_cTGP_PowerLimit,GPU_Set_cTGP_PowerLimit,GPU_Get_Default_PPAB_cTGP_PowerLimit,GPU_Get_Temperature_Limit,GPU_Set_Temperature_Limit,GPU_Get_Boost_Clock
+LENOVO_GAMEZONE_GPU_OC_DATA  | methods: -
+LENOVO_FAN_METHOD  | methods: Fan_Get_FullSpeed,Fan_Set_FullSpeed,Fan_Get_MaxSpeed,Fan_Set_MaxSpeed,Fan_Get_Table,Fan_Set_Table,Fan_GetCurrentFanSpeed,Fan_GetCurrentSensorTemperature,Fan_SetCurrentFanSpeed
+Lenovo_BIOSElement  | methods: -
+Lenovo_SetBiosSetting  | methods: SetBiosSetting
+Lenovo_DiscardBiosSettings  | methods: DiscardBiosSettings
+Lenovo_BiosSetting  | methods: -
+Lenovo_SaveBiosSettings  | methods: SaveBiosSettings
+Lenovo_SetBiosPassword  | methods: SetBiosPassword
+Lenovo_GetBiosSelections  | methods: GetBiosSelections
+Lenovo_BiosPasswordSettings  | methods: -
+Lenovo_LoadDefaultSettings  | methods: LoadDefaultSettings
+LENOVO_FAN_MAX_SPEED_DATA  | methods: -
+Lfc_thermal_interface  | methods: GetVersion,GetPlatformVersion,GetFan1Speed,SetFan1Speed,GetFan2Speed,SetFan2Speed,GetPowerLimit1,SetPowerLimit1,GetPowerLimit2,SetPowerLimit2,GetCPUTemperature,GetGPUTemperature,GetNearCPUTemperature,GetNearGPUTemperature,GetChargerTemperature,GetEnvironmentTemperature,GetSSDTemperature,GetRAMTemperature,DisableDPTF
+LENOVO_SR_DATA  | methods: GetDataValue,StartECMonitor,StopECMonitor,GetCapability,Reserved1,Reserved2
+LENOVO_SUPERKEY_DATA  | methods: GetDataValue,GetKeyName,SetDataValue
+LENOVO_GPU_OVERCLOCKING_DATA  | methods: -
+Lfc_Common_Wmi_Service  | methods: -
+Lfc_Tools_Wmi_Service  | methods: LfcWmiEcControlUlong,Lfcreadedid,LfcData,Lfcreadbattery,LfcWmiwritevariable,LfcWmiReadAMDGPIO
+LENOVO_PANEL_METHOD  | methods: Panel_Get_Support_Status,Panel_Get_Status,Panel_Set_Status,Panel_Get_Low_Latency_Mode,Panel_Set_Low_Latency_Mode,Panel_Get_PIP_Info,Panel_Set_PIP_Info,Panel_Get_Game_Aid_FPS_Display_Pos,Panel_Set_Game_Aid_FPS_Display_Pos,Panel_Get_Game_Aid_FPS,Panel_Get_Game_Aid_Sight_Mode,Panel_Set_Game_Aid_Sight_Mode,Panel_Get_Game_Aid_Timer_Info,Panel_Set_Game_Aid_Timer_Info,Panel_Get_Game_Aid_Countdown_Info,Panel_Set_Game_Aid_Countdown_Info,Panel_Get_Display_Mode,Panel_Set_Display_Mode,Panel_Get_Gamut_Switch,Panel_Set_Gamut_Switch,Panel_Get_MPRT,Panel_Set_MPRT
+LENOVO_CPU_OVERCLOCKING_DATA  | methods: -
+LENOVO_MEMORY_OC_DATA  | methods: -
+LENOVO_LIGHTING_METHOD  | methods: Get_Lighting_Current_Status,Set_Lighting_Current_Status
+LENOVO_MEMORY_METHOD  | methods: MEM_Get_OC_Status,MEM_Set_OC_Status,MEM_Set_OC_Data
+--- (lenovo-gamzone-classes => OK, 503 ms)
+
+### lenovo-fan-method
+实例属性: Active, InstanceName, PSComputerName
+QueryThermalTableMode => 
+--- (lenovo-fan-method => OK, 65 ms)
+
+### lenovo-temp-via-event-query
+6 秒内收到 LENOVO_GAMEZONE_TEMP_EVENT 条数 = 0（0 表示固件不主动上报，需走方法调用）
+--- (lenovo-temp-via-event-query => OK, 6073 ms)
+
+### disk-reliability-fixed
+
+DeviceId Temperature PowerOnHours Wear ReadErrorsTotal ReadErrorsUncorrected
+-------- ----------- ------------ ---- --------------- ---------------------
+1                 38                 0                                      
+0                 48                 0                                      
+
+
+--- (disk-reliability-fixed => OK, 1883 ms)
+
+### disk-smart-attr
+FAIL: 无效类 
+--- (disk-smart-attr => FAIL, 28 ms)
+
+### net-per-ifindex
+↑  与 Get-NetAdapter / Get-NetRoute 的 ifIndex 一一对应，是无歧义的关联键
+--- (net-per-ifindex => OK, 1179 ms)
+
+### net-wmi-perf-name-mangling
+
+Name                             
+----                             
+Intel[R] Wi-Fi 6E AX211 160MHz   
+Realtek USB FE Family Controller 
+Realtek USB GbE Family Controller
+
+
+↑  对比上一项：WMI 类里名称被规范化（[R]、GbE→FE、无 ifIndex），据此匹配会错
+--- (net-wmi-perf-name-mangling => OK, 344 ms)
+
+### desktop-metrics-fixed
+
+Device       Primary Bounds                           WorkingArea                     
+------       ------- ------                           -----------                     
+\\.\DISPLAY1    True {X=0,Y=0,Width=1707,Height=1067} {X=0,Y=0,Width=1707,Height=1019}
+
+
+AppliedDPI = 144  (缩放 = 150%)
+--- (desktop-metrics-fixed => OK, 133 ms)
+
+### thermal-cross-check
+热区数量 = ；读数(0.1K) = 2732
+判读：0.1 °C —— 与 i5-12500H 实际负载温度不符，属固件未实现
+↑  若连 TripPoint 都为空，说明 ACPI 热管理在本机基本不可用
+--- (thermal-cross-check => OK, 32 ms)
+
+### nvml-availability
+nvml.dll: C:\Windows\System32\nvml.dll
+name, utilization.gpu [%], memory.used [MiB], temperature.gpu
+NVIDIA GeForce RTX 3050 Ti Laptop GPU, 30 %, 2979 MiB, 53
+GPUEngine 计数器实例数 = 767（UtilizationPercentage 常为 0，需实测）
+--- (nvml-availability => OK, 1164 ms)
+
+### elevation-baseline
+EnableLUA=0  当前进程 elevated=True
+⚠ 本机 UAC 已关闭 => 所有进程天然带管理员权限。本轮所有 OK 结论在普通 UAC 机器上可能变成 AccessDenied，需二次验证。
+--- (elevation-baseline => OK, 15 ms)
+
+=== 第二轮结束 ===

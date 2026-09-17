@@ -1,0 +1,120 @@
+﻿
+########## 空载基线  (22:40:40) ##########
+GZ  GetCPUTemp  Data=0 => ERR 无效的参数 
+GZ  GetGPUTemp  Data=0 => ERR 无效的参数 
+GZ  GetIRTemp   Data=0 => ERR 无效的参数 
+GZ  GetCPUTemp  Data=1 => ERR 无效的参数 
+GZ  GetGPUTemp  Data=1 => ERR 无效的参数 
+GZ  GetIRTemp   Data=1 => ERR 无效的参数 
+GZ  GetCPUTemp  Data=2 => ERR 无效的参数 
+GZ  GetGPUTemp  Data=2 => ERR 无效的参数 
+GZ  GetIRTemp   Data=2 => ERR 无效的参数 
+GZ  GetFan1Speed Data=0 => ERR 无效的参数 
+GZ  GetFan2Speed Data=0 => ERR 无效的参数 
+Lfc GetFan1Speed Data=0 => ERR 无效的参数 
+GZ  GetFan1Speed Data=1 => ERR 无效的参数 
+GZ  GetFan2Speed Data=1 => ERR 无效的参数 
+Lfc GetFan1Speed Data=1 => ERR 无效的参数 
+GZ  GetFanCount    => ERR 无效的参数 
+GZ  GetCpuFrequency=> ERR 无效的参数 
+GZ  GetProductInfo => ERR 无效的参数 
+Lfc GetCPUTemperature Data=0 => ERR 无效的参数 
+Lfc GetEnvironmentTemp  Data=0 => ERR 无效的参数 
+Lfc GetVersion           Data=0 => ERR 无效的参数 
+FAN Fan_GetCurrentFanSpeed FanID=0 => OK  ret=True  CurrentFanSpeed=2994
+FAN Fan_GetCurrentSensorTemp SensorID=0 => ERR 无效的对象 
+FAN Fan_GetCurrentFanSpeed FanID=1 => OK  ret=True  CurrentFanSpeed=3003
+FAN Fan_GetCurrentSensorTemp SensorID=1 => ERR 无效的对象 
+ACPI ThermalZone => 2732
+CPU _Total usage => 29
+
+>>> 施加 CPU 负载 30 秒（占用所有核心）
+
+########## 负载中 +14s  (22:40:58) ##########
+GZ  GetCPUTemp  Data=0 => ERR 无效的参数 
+GZ  GetGPUTemp  Data=0 => ERR 无效的参数 
+GZ  GetIRTemp   Data=0 => ERR 无效的参数 
+GZ  GetCPUTemp  Data=1 => ERR 无效的参数 
+GZ  GetGPUTemp  Data=1 => ERR 无效的参数 
+GZ  GetIRTemp   Data=1 => ERR 无效的参数 
+GZ  GetCPUTemp  Data=2 => ERR 无效的参数 
+GZ  GetGPUTemp  Data=2 => ERR 无效的参数 
+GZ  GetIRTemp   Data=2 => ERR 无效的参数 
+GZ  GetFan1Speed Data=0 => ERR 无效的参数 
+GZ  GetFan2Speed Data=0 => ERR 无效的参数 
+Lfc GetFan1Speed Data=0 => ERR 无效的参数 
+GZ  GetFan1Speed Data=1 => ERR 无效的参数 
+GZ  GetFan2Speed Data=1 => ERR 无效的参数 
+Lfc GetFan1Speed Data=1 => ERR 无效的参数 
+GZ  GetFanCount    => ERR 无效的参数 
+GZ  GetCpuFrequency=> ERR 无效的参数 
+GZ  GetProductInfo => ERR 无效的参数 
+Lfc GetCPUTemperature Data=0 => ERR 无效的参数 
+Lfc GetEnvironmentTemp  Data=0 => ERR 无效的参数 
+Lfc GetVersion           Data=0 => ERR 无效的参数 
+FAN Fan_GetCurrentFanSpeed FanID=0 => OK  ret=True  CurrentFanSpeed=2986
+FAN Fan_GetCurrentSensorTemp SensorID=0 => ERR 无效的对象 
+FAN Fan_GetCurrentFanSpeed FanID=1 => OK  ret=True  CurrentFanSpeed=3028
+FAN Fan_GetCurrentSensorTemp SensorID=1 => ERR 无效的对象 
+ACPI ThermalZone => 2732
+CPU _Total usage => 83
+
+########## 负载中 +26s  (22:41:12) ##########
+GZ  GetCPUTemp  Data=0 => ERR 无效的参数 
+GZ  GetGPUTemp  Data=0 => ERR 无效的参数 
+GZ  GetIRTemp   Data=0 => ERR 无效的参数 
+GZ  GetCPUTemp  Data=1 => ERR 无效的参数 
+GZ  GetGPUTemp  Data=1 => ERR 无效的参数 
+GZ  GetIRTemp   Data=1 => ERR 无效的参数 
+GZ  GetCPUTemp  Data=2 => ERR 无效的参数 
+GZ  GetGPUTemp  Data=2 => ERR 无效的参数 
+GZ  GetIRTemp   Data=2 => ERR 无效的参数 
+GZ  GetFan1Speed Data=0 => ERR 无效的参数 
+GZ  GetFan2Speed Data=0 => ERR 无效的参数 
+Lfc GetFan1Speed Data=0 => ERR 无效的参数 
+GZ  GetFan1Speed Data=1 => ERR 无效的参数 
+GZ  GetFan2Speed Data=1 => ERR 无效的参数 
+Lfc GetFan1Speed Data=1 => ERR 无效的参数 
+GZ  GetFanCount    => ERR 无效的参数 
+GZ  GetCpuFrequency=> ERR 无效的参数 
+GZ  GetProductInfo => ERR 无效的参数 
+Lfc GetCPUTemperature Data=0 => ERR 无效的参数 
+Lfc GetEnvironmentTemp  Data=0 => ERR 无效的参数 
+Lfc GetVersion           Data=0 => ERR 无效的参数 
+FAN Fan_GetCurrentFanSpeed FanID=0 => OK  ret=True  CurrentFanSpeed=2998
+FAN Fan_GetCurrentSensorTemp SensorID=0 => ERR 无效的对象 
+FAN Fan_GetCurrentFanSpeed FanID=1 => OK  ret=True  CurrentFanSpeed=3024
+FAN Fan_GetCurrentSensorTemp SensorID=1 => ERR 无效的对象 
+ACPI ThermalZone => 2732
+CPU _Total usage => 78
+
+########## 撤载后 +10s  (22:41:24) ##########
+GZ  GetCPUTemp  Data=0 => ERR 无效的参数 
+GZ  GetGPUTemp  Data=0 => ERR 无效的参数 
+GZ  GetIRTemp   Data=0 => ERR 无效的参数 
+GZ  GetCPUTemp  Data=1 => ERR 无效的参数 
+GZ  GetGPUTemp  Data=1 => ERR 无效的参数 
+GZ  GetIRTemp   Data=1 => ERR 无效的参数 
+GZ  GetCPUTemp  Data=2 => ERR 无效的参数 
+GZ  GetGPUTemp  Data=2 => ERR 无效的参数 
+GZ  GetIRTemp   Data=2 => ERR 无效的参数 
+GZ  GetFan1Speed Data=0 => ERR 无效的参数 
+GZ  GetFan2Speed Data=0 => ERR 无效的参数 
+Lfc GetFan1Speed Data=0 => ERR 无效的参数 
+GZ  GetFan1Speed Data=1 => ERR 无效的参数 
+GZ  GetFan2Speed Data=1 => ERR 无效的参数 
+Lfc GetFan1Speed Data=1 => ERR 无效的参数 
+GZ  GetFanCount    => ERR 无效的参数 
+GZ  GetCpuFrequency=> ERR 无效的参数 
+GZ  GetProductInfo => ERR 无效的参数 
+Lfc GetCPUTemperature Data=0 => ERR 无效的参数 
+Lfc GetEnvironmentTemp  Data=0 => ERR 无效的参数 
+Lfc GetVersion           Data=0 => ERR 无效的参数 
+FAN Fan_GetCurrentFanSpeed FanID=0 => OK  ret=True  CurrentFanSpeed=2957
+FAN Fan_GetCurrentSensorTemp SensorID=0 => ERR 无效的对象 
+FAN Fan_GetCurrentFanSpeed FanID=1 => OK  ret=True  CurrentFanSpeed=3015
+FAN Fan_GetCurrentSensorTemp SensorID=1 => ERR 无效的对象 
+ACPI ThermalZone => 2732
+CPU _Total usage => 50
+
+=== 补测结束：判读标准 —— 数值随负载变化 = 真实可读；恒定 0 = 固件未实现；报错 = 通路不通 ===
