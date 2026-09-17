@@ -13,6 +13,8 @@ pub struct Snapshot {
     pub memory: Option<MemorySnapshot>,
     pub network: Option<NetworkSnapshot>,
     pub disk: Option<DiskSnapshot>,
+    /// 厂商温度/风扇（联想 EC 等）。通用通路永远不进这里。
+    pub thermal: Option<crate::thermal::ThermalSnapshot>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -87,6 +89,8 @@ pub struct CpuSnapshot {
     pub queue_length: Option<u32>,
     /// 短时峰值（采样器内维护滑动窗口）
     pub peak: Option<f32>,
+    /// CPU 温度 °C（厂商 provider 命中且过合理性校验时才 Some）
+    pub temp_c: Option<f32>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

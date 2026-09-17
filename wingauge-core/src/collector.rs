@@ -124,6 +124,12 @@ impl Collector {
                 .observe(c.usage, now_ms, self.thresholds.cpu_usage_high_pct);
         }
 
+        // 厂商温度/风扇：2.5s 缓存；非联想机器返回 None
+        let thermal = crate::thermal::read_lenovo();
+        if let (Some(cpu_snap), Some(th)) = (&mut cpu, &thermal) {
+            cpu_snap.temp_c = th.cpu_temp_c;
+        }
+
         let health = score::score(
             cpu.as_ref(),
             memory.as_ref(),
@@ -141,6 +147,7 @@ impl Collector {
             memory,
             network,
             disk,
+            thermal,
         }
     }
 
@@ -184,6 +191,7 @@ impl Collector {
             per_core,
             queue_length: None,
             peak: None,
+            temp_c: None,
         })
     }
 

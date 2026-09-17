@@ -5,10 +5,12 @@ pub mod collector;
 pub mod provider;
 pub mod score;
 pub mod snapshot;
+pub mod thermal;
 pub mod validity;
 
 pub use collector::Collector;
 pub use snapshot::{HealthBand, HealthSnapshot, Snapshot};
+pub use thermal::ThermalSnapshot;
 
 /// 库版本，与 workspace package version 同步
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");

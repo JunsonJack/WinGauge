@@ -25,6 +25,8 @@ import {
   loadLabel,
   memStatus,
   statusBadge,
+  tempBadge,
+  tempTone,
   type Snapshot,
 } from './lib/metrics'
 
@@ -89,6 +91,11 @@ const bootLine = computed(() =>
 
 const cpuS = computed(() => (cpu.value ? cpuStatus(cpu.value.usage) : 'ok'))
 const memS = computed(() => (memory.value ? memStatus(memory.value.usage) : 'ok'))
+const cpuTemp = computed(() => cpu.value?.tempC ?? null)
+const cpuTempBadge = computed(() => tempBadge(cpuTemp.value))
+const cpuTempTone = computed(() => tempTone(cpuTemp.value))
+const thermal = computed(() => snap.value?.thermal ?? null)
+const fans = computed(() => thermal.value?.fans ?? [])
 const diskPct = computed(() => {
   if (!disk.value) return 0
   return (disk.value.usedBytes / Math.max(1, disk.value.totalBytes)) * 100
@@ -263,8 +270,8 @@ function quit() {
           icon="cpu"
           label="CPU"
           :value="`${cpu.usage.toFixed(0)}%`"
-          :badge="statusBadge(cpuS)"
-          :badge-tone="cpuS === 'ok' ? 'ok' : cpuS"
+          :badge="cpuTempBadge || statusBadge(cpuS)"
+          :badge-tone="cpuTempBadge ? cpuTempTone : cpuS === 'ok' ? 'ok' : cpuS"
           :bar="cpu.usage"
           :bar-tone="cpuS"
         >
@@ -273,6 +280,7 @@ function quit() {
           </template>
           <template #note>
             {{ loadLabel(cpu.usage) }} · {{ cpu.perCore.length }} 逻辑核
+            <template v-if="cpuTempBadge"> · {{ cpuTempBadge }}</template>
             <template v-if="cpu.peak != null"> · 峰值 {{ cpu.peak.toFixed(0) }}%</template>
             <Sparkline :values="cpuSeries" :max="100" color="#2fbf71" :height="28" />
           </template>
@@ -294,6 +302,21 @@ function quit() {
               · 已提交 {{ formatBytes(memory.committedBytes) }}
             </template>
             <Sparkline :values="memSeries" :max="100" color="#e8a317" :height="28" />
+          </template>
+        </MetricCard>
+
+        <!-- 厂商风扇：仅联想 EC 命中时显示 -->
+        <MetricCard
+          v-if="fans.length"
+          icon="fan"
+          label="风扇"
+          :value="fans.length === 1 ? `${fans[0].rpm}` : `${Math.max(...fans.map((f) => f.rpm))}`"
+          value-unit="RPM"
+          badge="实测"
+          badge-tone="info"
+        >
+          <template #note>
+            <span v-for="f in fans" :key="f.id" class="fan-item">F{{ f.id }} {{ f.rpm }} RPM</span>
           </template>
         </MetricCard>
 
@@ -435,6 +458,12 @@ function quit() {
 
 .dot.up {
   background: #2fbf71;
+}
+
+.fan-item {
+  display: inline-block;
+  margin-right: 10px;
+  font-variant-numeric: tabular-nums;
 }
 
 .foot {

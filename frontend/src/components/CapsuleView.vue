@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { CpuSnapshot, HealthSnapshot, MemorySnapshot, NetworkSnapshot } from '../lib/metrics'
-import { cpuStatus, formatRate, memStatus } from '../lib/metrics'
+import { cpuStatus, formatRate, memStatus, tempBadge, tempTone } from '../lib/metrics'
 
 const props = defineProps<{
   cpu: CpuSnapshot | null
@@ -20,6 +20,8 @@ const emit = defineEmits<{
 
 const cpuTone = computed(() => (props.cpu ? cpuStatus(props.cpu.usage) : 'ok'))
 const memTone = computed(() => (props.memory ? memStatus(props.memory.usage) : 'ok'))
+const tempText = computed(() => tempBadge(props.cpu?.tempC))
+const tempCls = computed(() => tempTone(props.cpu?.tempC))
 const healthTone = computed(() => {
   const s = props.health?.score
   if (s == null) return 'dim'
@@ -41,7 +43,9 @@ const healthTone = computed(() => {
 
     <div class="metric" :data-tone="cpuTone">
       <div class="v">{{ cpu ? `${cpu.usage.toFixed(0)}%` : '—' }}</div>
-      <div class="k">CPU</div>
+      <div class="k">
+        CPU<template v-if="tempText"> · <span :class="['temp', tempCls]">{{ tempText }}</span></template>
+      </div>
     </div>
 
     <div class="sep" />
@@ -174,6 +178,22 @@ const healthTone = computed(() => {
   color: var(--text-dim);
   margin-top: 1px;
   letter-spacing: 0.02em;
+}
+
+.temp {
+  font-weight: 700;
+}
+
+.temp.ok {
+  color: var(--accent);
+}
+
+.temp.warn {
+  color: var(--warn);
+}
+
+.temp.bad {
+  color: var(--bad);
 }
 
 .sep {

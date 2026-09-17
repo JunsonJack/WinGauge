@@ -28,6 +28,26 @@ export interface CpuSnapshot {
   perCore: number[]
   queueLength: number | null
   peak: number | null
+  /** 厂商 provider 读到的 CPU 温度 °C；通用假数据不会出现 */
+  tempC: number | null
+}
+
+export interface ThermalSensor {
+  id: number
+  tempC: number
+  label: string
+}
+
+export interface FanReading {
+  id: number
+  rpm: number
+}
+
+export interface ThermalSnapshot {
+  cpuTempC: number | null
+  gpuTempC: number | null
+  otherSensors: ThermalSensor[]
+  fans: FanReading[]
 }
 
 export interface MemorySnapshot {
@@ -63,6 +83,7 @@ export interface Snapshot {
   memory: MemorySnapshot | null
   network: NetworkSnapshot | null
   disk: DiskSnapshot | null
+  thermal: ThermalSnapshot | null
 }
 
 export function formatBytes(n: number, digits = 1): string {
@@ -156,4 +177,17 @@ export function loadLabel(usage: number): string {
   if (usage < 30) return '低负载'
   if (usage < 70) return '中负载'
   return '高负载'
+}
+
+/** 温度徽标文案与色档：参考图 CPU 卡右上角的 51°C */
+export function tempBadge(tempC: number | null | undefined): string | null {
+  if (tempC == null || !Number.isFinite(tempC)) return null
+  return `${Math.round(tempC)}°C`
+}
+
+export function tempTone(tempC: number | null | undefined): 'ok' | 'warn' | 'bad' {
+  if (tempC == null) return 'ok'
+  if (tempC >= 90) return 'bad'
+  if (tempC >= 80) return 'warn'
+  return 'ok'
 }

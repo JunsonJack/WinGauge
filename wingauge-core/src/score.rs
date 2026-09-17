@@ -15,6 +15,8 @@ pub struct ScoreThresholds {
     pub mem_critical_pct: f32,
     pub disk_min_free_pct: f32,
     pub commit_watch_pct: f32,
+    /// CPU 温度阈值（仅厂商 provider 读数参与）
+    pub cpu_temp_c: f32,
 }
 
 impl Default for ScoreThresholds {
@@ -26,6 +28,7 @@ impl Default for ScoreThresholds {
             mem_critical_pct: 95.0,
             disk_min_free_pct: 10.0,
             commit_watch_pct: 90.0,
+            cpu_temp_c: 85.0,
         }
     }
 }
@@ -65,7 +68,7 @@ pub fn score(
     let mut score: i32 = 100;
     let mut issues = Vec::new();
 
-    if let Some(_cpu) = cpu {
+    if let Some(cpu) = cpu {
         let sustained = tracker.sustained_ms(now_ms);
         if sustained >= th.cpu_sustain_secs * 1000 {
             let pts = 15;
@@ -79,6 +82,18 @@ pub fn score(
                 ),
                 points: pts as u32,
             });
+        }
+        // 温度仅在厂商 provider 命中时参与（通用通路是假数据，永不进这里）
+        if let Some(t) = cpu.temp_c {
+            if t > th.cpu_temp_c {
+                let pts = 20;
+                score -= pts;
+                issues.push(HealthIssue {
+                    metric: "cpu_temp".into(),
+                    reason: format!("CPU 温度 {:.0}°C，高于 {:.0}°C", t, th.cpu_temp_c),
+                    points: pts as u32,
+                });
+            }
         }
     }
 
@@ -183,6 +198,7 @@ mod tests {
             per_core: vec![10.0],
             queue_length: None,
             peak: None,
+            temp_c: None,
         };
         let h = score(
             Some(&cpu),

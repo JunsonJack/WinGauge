@@ -30,11 +30,27 @@ fn main() {
 
     match &snap.cpu {
         Some(cpu) => {
-            println!("cpu     : {:.1}% peak={:?} cores={}", cpu.usage, cpu.peak, cpu.per_core.len());
+            println!(
+                "cpu     : {:.1}% peak={:?} temp={:?}°C cores={}",
+                cpu.usage, cpu.peak, cpu.temp_c, cpu.per_core.len()
+            );
             let sample: Vec<String> = cpu.per_core.iter().take(8).map(|v| format!("{v:.0}")).collect();
             println!("          per-core[:8] = {:?}", sample);
         }
         None => println!("cpu     : None"),
+    }
+
+    match &snap.thermal {
+        Some(t) => {
+            println!(
+                "thermal : cpu={:?} gpu={:?} fans={:?} other={}",
+                t.cpu_temp_c,
+                t.gpu_temp_c,
+                t.fans,
+                t.other_sensors.len()
+            );
+        }
+        None => println!("thermal : None（非联想或未命中）"),
     }
 
     match &snap.memory {
