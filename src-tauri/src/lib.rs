@@ -1,4 +1,4 @@
-use tauri::{Manager, PhysicalPosition, PhysicalRect, PhysicalSize, WebviewWindow};
+use tauri::{Emitter, Manager, PhysicalPosition, PhysicalRect, PhysicalSize, WebviewWindow};
 
 mod autostart;
 mod panel;
@@ -24,7 +24,15 @@ pub fn run() {
             }
         }))
         .manage(panel::PanelState::default())
-        .invoke_handler(tauri::generate_handler![smoke_show_panel])
+        .invoke_handler(tauri::generate_handler![
+            smoke_show_panel,
+            get_autostart,
+            set_autostart,
+            app_version,
+            quit_app,
+            get_sampler_paused,
+            set_sampler_paused
+        ])
         .setup(|app| {
             let window = app
                 .get_webview_window(PANEL_LABEL)
@@ -39,6 +47,41 @@ pub fn run() {
         })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+}
+
+#[tauri::command]
+fn get_autostart() -> bool {
+    autostart::is_enabled().ok().flatten().is_some()
+}
+
+#[tauri::command]
+fn set_autostart(enabled: bool) -> tauri::Result<()> {
+    autostart::set_enabled(enabled)
+}
+
+#[tauri::command]
+fn app_version() -> String {
+    env!("CARGO_PKG_VERSION").to_string()
+}
+
+#[tauri::command]
+fn quit_app(app: tauri::AppHandle) {
+    app.exit(0);
+}
+
+#[tauri::command]
+fn get_sampler_paused(app: tauri::AppHandle) -> bool {
+    app.try_state::<sampler::SamplerHandle>()
+        .map(|s| s.is_paused())
+        .unwrap_or(false)
+}
+
+#[tauri::command]
+fn set_sampler_paused(app: tauri::AppHandle, paused: bool) {
+    if let Some(s) = app.try_state::<sampler::SamplerHandle>() {
+        s.set_paused(paused);
+        let _ = app.emit("tray://pause-toggled", paused);
+    }
 }
 
 /// 冒烟测试命令：模拟"托盘图标在屏幕右下角"的点击，验证定位 + 弹出 + 收起链路。

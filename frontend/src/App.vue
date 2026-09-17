@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { listen, type UnlistenFn } from '@tauri-apps/api/event'
 import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow'
 import PanelHeader from './components/PanelHeader.vue'
@@ -7,6 +7,9 @@ import MetricCard from './components/MetricCard.vue'
 import HealthCard from './components/HealthCard.vue'
 import DeviceHeader from './components/DeviceHeader.vue'
 import CoreBars from './components/CoreBars.vue'
+import Sparkline from './components/Sparkline.vue'
+import SettingsView from './components/SettingsView.vue'
+import { Ring } from './lib/ring'
 import {
   cpuStatus,
   diskStatus,
@@ -20,7 +23,15 @@ import {
 const panel = getCurrentWebviewWindow()
 const pinned = ref(false)
 const paused = ref(false)
+const showSettings = ref(false)
 const snap = ref<Snapshot | null>(null)
+
+const cpuHist = new Ring(60, 0)
+const memHist = new Ring(60, 0)
+const netDownHist = new Ring(60, 0)
+const cpuSeries = ref<number[]>([])
+const memSeries = ref<number[]>([])
+const netSeries = ref<number[]>([])
 
 let unlistenTick: UnlistenFn | undefined
 let unlistenOpened: UnlistenFn | undefined
@@ -41,8 +52,7 @@ const osLine = computed(() => {
 })
 const cpuLine = computed(() => {
   if (!device.value) return ''
-  const { cpuBrand, logicalCores } = device.value
-  return `${cpuBrand} · ${logicalCores} 核`
+  return `${device.value.cpuBrand} · ${device.value.logicalCores} 核`
 })
 const memLine = computed(() => {
   if (!device.value) return ''
@@ -53,15 +63,28 @@ const uptimeLine = computed(() => {
   return `已运行 ${formatUptime(device.value.uptimeSecs)}`
 })
 
+const cpuLoadLabel = computed(() => {
+  const u = cpu.value?.usage ?? 0
+  if (u < 30) return '低负载'
+  if (u < 70) return '中负载'
+  return '高负载'
+})
+
+watch(snap, (s) => {
+  if (!s) return
+  if (s.cpu) cpuHist.push(s.cpu.usage)
+  if (s.memory) memHist.push(s.memory.usage)
+  if (s.network) netDownHist.push(s.network.downloadBps)
+  cpuSeries.value = cpuHist.values()
+  memSeries.value = memHist.values()
+  netSeries.value = netDownHist.values()
+})
+
 onMounted(async () => {
   unlistenTick = await listen<Snapshot>('snapshot://tick', (e) => {
     snap.value = e.payload
   })
-
-  unlistenOpened = await listen('panel://opened', () => {
-    // 预留：W3 图表 resize
-  })
-
+  unlistenOpened = await listen('panel://opened', () => {})
   unlistenPause = await listen<boolean>('tray://pause-toggled', (e) => {
     paused.value = e.payload === true
   })
@@ -82,6 +105,10 @@ onUnmounted(() => {
 
 function onKeyDown(e: KeyboardEvent) {
   if (e.key === 'Escape') {
+    if (showSettings.value) {
+      showSettings.value = false
+      return
+    }
     void panel.hide()
   }
 }
@@ -119,86 +146,99 @@ async function togglePin() {
 <template>
   <PanelHeader
     :pinned="pinned"
+    :settings="showSettings"
     title="WinGauge"
-    :subtitle="paused ? '采样已暂停' : '实时监控'"
+    :subtitle="showSettings ? '偏好设置' : paused ? '采样已暂停' : '实时监控'"
     @pin="togglePin"
+    @settings="showSettings = !showSettings"
     @header-mousedown="startDrag"
   />
 
-  <DeviceHeader
-    :host="hostLine"
-    :os-line="osLine"
-    :cpu-line="cpuLine"
-    :mem-line="memLine"
-    :uptime-line="uptimeLine"
-  />
+  <SettingsView v-if="showSettings" @close="showSettings = false" />
 
-  <HealthCard :health="health" />
+  <template v-else>
+    <DeviceHeader
+      :host="hostLine"
+      :os-line="osLine"
+      :cpu-line="cpuLine"
+      :mem-line="memLine"
+      :uptime-line="uptimeLine"
+    />
 
-  <div class="cards">
-    <MetricCard
-      v-if="cpu"
-      label="CPU"
-      :value="`${cpu.usage.toFixed(0)}%`"
-      :status="cpuStatus(cpu.usage)"
-      :bar="cpu.usage"
-      :bar-label="cpu.peak != null ? `峰值 ${cpu.peak.toFixed(0)}%` : undefined"
-    >
-      <template #note>
-        <div>{{ cpu.perCore.length }} 逻辑核 · {{ cpu.usage < 30 ? '低负载' : cpu.usage < 70 ? '中负载' : '高负载' }}</div>
-        <CoreBars :cores="cpu.perCore" />
-      </template>
-    </MetricCard>
+    <HealthCard :health="health" />
 
-    <MetricCard
-      v-if="memory"
-      label="内存"
-      :value="`${memory.usage.toFixed(0)}%`"
-      :status="memStatus(memory.usage)"
-      :bar="memory.usage"
-      :bar-label="`${formatBytes(memory.usedBytes)} / ${formatBytes(memory.totalBytes)}`"
-    >
-      <template #note>
-        <span v-if="memory.committedBytes != null && memory.committedLimitBytes != null">
-          已提交 {{ formatBytes(memory.committedBytes) }} / {{ formatBytes(memory.committedLimitBytes) }}
-        </span>
-        <span v-else>已用 {{ formatBytes(memory.usedBytes) }} / {{ formatBytes(memory.totalBytes) }}</span>
-      </template>
-    </MetricCard>
+    <div class="cards">
+      <MetricCard
+        v-if="cpu"
+        label="CPU"
+        :value="`${cpu.usage.toFixed(0)}%`"
+        :status="cpuStatus(cpu.usage)"
+        :bar="cpu.usage"
+        :bar-label="cpu.peak != null ? `峰值 ${cpu.peak.toFixed(0)}%` : undefined"
+      >
+        <template #note>
+          <div class="note-row">
+            <span>{{ cpu.perCore.length }} 逻辑核 · {{ cpuLoadLabel }}</span>
+          </div>
+          <CoreBars :cores="cpu.perCore" />
+          <Sparkline :values="cpuSeries" :max="100" color="#34c759" :height="24" />
+        </template>
+      </MetricCard>
 
-    <MetricCard
-      v-if="network"
-      label="网络"
-      :value="formatRate(network.downloadBps)"
-      status="ok"
-    >
-      <template #note>
-        ↓ {{ formatRate(network.downloadBps) }} · ↑ {{ formatRate(network.uploadBps) }}
-        <span class="iface"> · {{ network.friendlyName }}</span>
-      </template>
-    </MetricCard>
+      <MetricCard
+        v-if="memory"
+        label="内存"
+        :value="`${memory.usage.toFixed(0)}%`"
+        :status="memStatus(memory.usage)"
+        :bar="memory.usage"
+        :bar-label="`${formatBytes(memory.usedBytes)} / ${formatBytes(memory.totalBytes)}`"
+      >
+        <template #note>
+          <span v-if="memory.committedBytes != null && memory.committedLimitBytes != null">
+            已提交 {{ formatBytes(memory.committedBytes) }} / {{ formatBytes(memory.committedLimitBytes) }}
+          </span>
+          <span v-else>已用 {{ formatBytes(memory.usedBytes) }} / {{ formatBytes(memory.totalBytes) }}</span>
+          <Sparkline :values="memSeries" :max="100" color="#0a84ff" :height="24" />
+        </template>
+      </MetricCard>
 
-    <MetricCard
-      v-if="disk"
-      label="磁盘"
-      :value="`${((disk.usedBytes / Math.max(1, disk.totalBytes)) * 100).toFixed(0)}%`"
-      :status="diskStatus((disk.usedBytes / Math.max(1, disk.totalBytes)) * 100)"
-      :bar="(disk.usedBytes / Math.max(1, disk.totalBytes)) * 100"
-      :bar-label="`${formatBytes(disk.usedBytes)} / ${formatBytes(disk.totalBytes)}`"
-    >
-      <template #note>
-        系统盘 {{ disk.letter }} · 剩余 {{ formatBytes(disk.totalBytes - disk.usedBytes) }}
-      </template>
-    </MetricCard>
+      <MetricCard
+        v-if="network"
+        label="网络"
+        :value="formatRate(network.downloadBps)"
+        status="ok"
+      >
+        <template #note>
+          <div class="note-row">
+            <span>↓ {{ formatRate(network.downloadBps) }} · ↑ {{ formatRate(network.uploadBps) }}</span>
+            <span class="iface">{{ network.friendlyName }}</span>
+          </div>
+          <Sparkline :values="netSeries" color="#5e5ce6" :height="24" />
+        </template>
+      </MetricCard>
 
-    <div v-if="!cpu && !memory && !network && !disk" class="empty">
-      正在等待第一帧采样…
+      <MetricCard
+        v-if="disk"
+        label="磁盘"
+        :value="`${((disk.usedBytes / Math.max(1, disk.totalBytes)) * 100).toFixed(0)}%`"
+        :status="diskStatus((disk.usedBytes / Math.max(1, disk.totalBytes)) * 100)"
+        :bar="(disk.usedBytes / Math.max(1, disk.totalBytes)) * 100"
+        :bar-label="`${formatBytes(disk.usedBytes)} / ${formatBytes(disk.totalBytes)}`"
+      >
+        <template #note>
+          系统盘 {{ disk.letter }} · 剩余 {{ formatBytes(Math.max(0, disk.totalBytes - disk.usedBytes)) }}
+        </template>
+      </MetricCard>
+
+      <div v-if="!cpu && !memory && !network && !disk" class="empty">
+        正在等待第一帧采样…
+      </div>
     </div>
-  </div>
+  </template>
 
   <footer class="foot">
-    <span>WinGauge 0.1.0 · {{ paused ? '已暂停' : '1s 刷新' }}</span>
-    <span v-if="pinned" class="pinned-tag">已钉住</span>
+    <span>WinGauge 0.1.0 · {{ paused ? '已暂停' : showSettings ? '设置' : '1s 刷新' }}</span>
+    <span v-if="pinned && !showSettings" class="pinned-tag">已钉住</span>
   </footer>
 </template>
 
@@ -210,6 +250,7 @@ async function togglePin() {
   overflow-y: auto;
   flex: 1;
   padding-right: 2px;
+  min-height: 0;
 }
 
 .empty {
@@ -219,8 +260,18 @@ async function togglePin() {
   font-size: 12px;
 }
 
+.note-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
 .iface {
   color: rgba(255, 255, 255, 0.4);
+  max-width: 45%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .foot {
@@ -235,7 +286,6 @@ async function togglePin() {
   color: var(--accent);
 }
 
-/* 窄滚动条 */
 .cards::-webkit-scrollbar {
   width: 4px;
 }

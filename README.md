@@ -2,8 +2,10 @@
 
 **Windows 托盘悬浮系统监控面板** —— 点一下托盘，CPU / 内存 / 网络 / 磁盘与健康度总分一眼看完。
 
-> 工作名 WinGauge · v0.1.0 · Windows 10/11 · 不需要管理员权限  
+> 工作名 WinGauge · **v0.1.0** · Windows 10/11 · 不需要管理员权限  
 > 参考信息架构：macOS 菜单栏弹窗式监控（CatStatus 形态），落地平台为 Windows。
+
+**v0.1 已可安装使用**：NSIS / MSI 安装包见下方「快速开始」。
 
 ---
 
@@ -31,12 +33,14 @@ Windows 上「看电脑现在怎么样」这件事，现有工具都有断点：
 | 钉住 + 拖动 | ✅ | 钉住后失焦不收起、可拖动，重启记住位置 |
 | 设备头 | ✅ | 主机名 / 系统版本 / CPU / 内存总量 / 运行时长 |
 | 健康度总分 | ✅ | 100 起扣，可展开扣分明细 |
-| CPU 卡片 | ✅ | 总使用率、峰值、每核柱状图、负载档位 |
-| 内存卡片 | ✅ | 已用/总量、已提交内存（Windows 语义，不出现「交换」歧义） |
-| 网络卡片 | ✅ | 主接口下行/上行速率 + 接口友好名 |
+| CPU 卡片 | ✅ | 总使用率、峰值、每核柱状图、负载档位、60s 趋势 |
+| 内存卡片 | ✅ | 已用/总量、已提交内存（Windows 语义，不出现「交换」歧义）、趋势 |
+| 网络卡片 | ✅ | 主接口下行/上行速率 + 接口友好名、趋势 |
 | 磁盘卡片 | ✅ | 系统盘用量、剩余空间 |
+| 设置页 | ✅ | 开机自启、采样说明、隐私说明、退出 |
 | 开机自启 | ✅ | HKCU Run，默认关闭，可被任务管理器统一管理 |
 | 单实例锁 | ✅ | 二次启动会弹出已有实例的面板 |
+| NSIS / MSI 安装包 | ✅ | `npm run tauri:build` |
 | 厂商温度/风扇 | ⏳ W4b | 联想 Legion EC 通路实测可读，待接入 |
 | 历史统计 | ⏳ W5 | SQLite 归档 + 日/周/月视图 |
 | 输入量统计 | ⏳ W6 | 默认关闭；只计数不记内容 |
@@ -54,44 +58,43 @@ Windows 上「看电脑现在怎么样」这件事，现有工具都有断点：
 - [Node.js](https://nodejs.org/) ≥ 20
 - WebView2 Runtime（Windows 11 自带）
 
+### 安装（推荐）
+
+从本机构建产物安装，或从 GitHub Releases 下载：
+
+```text
+target\release\bundle\nsis\WinGauge_0.1.0_x64-setup.exe   # NSIS（推荐）
+target\release\bundle\msi\WinGauge_0.1.0_x64_en-US.msi    # MSI
+```
+
+安装后在开始菜单或托盘找到 WinGauge。**首次启动托盘图标可能在溢出区**，可固定到任务栏托盘。
+
 ### 开发
 
 ```powershell
-# 前端依赖
-cd frontend
-npm install
-cd ..
+# 一键（会构建前端并拉起 Tauri）
+npm install   # 可选，根目录仅脚本
+npm run tauri:dev
 
-# 开发模式（会拉起 Vite + Tauri）
-npm run tauri dev
-# 若顶层没有 npm scripts，也可：
-#   cd frontend && npm run dev   # 另开一个终端
-#   cargo tauri dev              # 需先 npm i -g @tauri-apps/cli 或用 npx
-```
-
-推荐用仓库根的便捷脚本（若已装 `@tauri-apps/cli`）：
-
-```powershell
+# 或分步
 cd frontend; npm install; npm run build; cd ..
-cargo tauri dev
+npx --yes @tauri-apps/cli dev
 ```
 
 ### 打包
 
 ```powershell
-cd frontend; npm run build; cd ..
-cargo tauri build
-# 产物在 src-tauri/target/release/bundle/
+npm run tauri:build
+# 产物在 src-tauri 无关，实际在：
+#   target/release/bundle/nsis/WinGauge_0.1.0_x64-setup.exe
+#   target/release/bundle/msi/WinGauge_0.1.0_x64_en-US.msi
 ```
 
 ### 测试与冒烟
 
 ```powershell
-# 核心库单测（校验、评分、网卡黑名单）
-cargo test -p wingauge-core
-
-# 本机采集冒烟：打一帧真实快照
-cargo run -p wingauge-core --example smoke_tick
+npm test    # cargo test -p wingauge-core
+npm run smoke
 ```
 
 `smoke_tick` 期望输出类似：
@@ -198,9 +201,9 @@ WinGauge/
 |---|---|---|
 | **W0** 调研定标 | 本机四轮采集通路实测 | ✅ |
 | **W1** 壳与形态 | 托盘 / 定位 / 钉住 / 自启 / 单实例 | ✅ |
-| **W2** 采集层 | collector + validity + score + IPC | ✅ v0.1 |
-| **W3** UI 复刻 | 七卡片样式、迷你图、暗色 | 🔶 骨架已就绪 |
-| **W4** 设置页 / 打包 / 更新 | NSIS、自动更新、阈值配置 | ⏳ |
+| **W2** 采集层 | collector + validity + score + IPC | ✅ |
+| **W3** UI | 设备头 / 健康度 / 四卡 / 迷你趋势 / 设置页 | ✅ v0.1.0 |
+| **W4** 打包 | NSIS + MSI | ✅ v0.1.0 |
 | **W4b** 厂商传感器 | 联想温度/风扇 + ID 扫描落盘 | ⏳ |
 | **W5** 历史统计 | SQLite 归档 + 日/周/月 | ⏳ |
 | **W6** 输入统计 | 默认关闭的低级钩子计数 | ⏳ |
@@ -219,7 +222,16 @@ WinGauge/
 
 - **W0 实测**：`docs/W0-本机采集实测.md` —— 通用温度通路假数据、联想 EC 可读、网络 ifIndex 结论。
 - **W1 完成**：`docs/W1-壳与形态.md` —— 托盘定位、钉住拖动的坑（`dragstart` 撞 DOM 保留字等）。
+- **v0.1 完成报告**：`docs/W2-W3-v0.1.0.md`
 - 单测不依赖真机：`cargo test -p wingauge-core`。
+
+### 已知限制（v0.1）
+
+- 网络主接口用启发式黑名单选择，未接 IP Helper ifIndex（虚拟网卡流量很大时可能选错）。
+- 温度 / 风扇卡片未渲染（通用通路是假数据，厂商 provider 在 W4b）。
+- 历史曲线仅前端 60s 内存窗口，无 SQLite 归档。
+- bundle identifier 为 `com.wingauge.app`（仅 Windows 无影响，发布前建议改 `.desktop`）。
+- 未在开启 UAC 的普通权限机器上完成复测（W0 R10）。
 
 ---
 
