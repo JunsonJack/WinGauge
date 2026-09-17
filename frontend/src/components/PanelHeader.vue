@@ -75,8 +75,8 @@ const emit = defineEmits<{
   justify-content: space-between;
   padding: 8px 10px;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.65);
+  background: var(--bg-header);
+  border: 1px solid var(--border);
   cursor: grab;
 }
 
@@ -131,7 +131,7 @@ const emit = defineEmits<{
 }
 
 .icon-btn:hover {
-  background: rgba(20, 40, 30, 0.06);
+  background: var(--hover);
   color: var(--text);
 }
 

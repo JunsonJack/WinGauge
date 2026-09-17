@@ -38,7 +38,7 @@ defineProps<{
   padding: 12px 14px;
   border-radius: var(--radius);
   background: var(--bg-card-strong);
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--card-edge);
   box-shadow: var(--shadow);
 }
 
@@ -77,7 +77,7 @@ defineProps<{
 .tag {
   font-size: 10px;
   color: var(--text-mid);
-  background: rgba(20, 40, 30, 0.05);
+  background: var(--hover);
   border-radius: 999px;
   padding: 3px 8px;
   white-space: nowrap;

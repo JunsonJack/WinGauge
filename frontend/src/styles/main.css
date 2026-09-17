@@ -1,23 +1,73 @@
 :root {
   --panel-alpha: 0.92;
+  --radius: 18px;
+  --radius-sm: 12px;
+
+  /* 语义色（两套主题共用色相） */
+  --accent: #2fbf71;
+  --accent-soft: rgba(47, 191, 113, 0.16);
+  --warn: #e8a317;
+  --warn-soft: rgba(232, 163, 23, 0.18);
+  --bad: #e5484d;
+  --bad-soft: rgba(229, 72, 77, 0.16);
+  --info: #3b9eff;
+  --info-soft: rgba(59, 158, 255, 0.16);
+}
+
+/* ---------- 浅色 ---------- */
+:root,
+[data-theme='light'] {
   --bg-panel: rgba(243, 247, 245, var(--panel-alpha));
   --bg-capsule: rgba(247, 250, 248, var(--panel-alpha));
-  --bg-card: rgba(255, 255, 255, 0.92);
+  --bg-card: rgba(255, 255, 255, 0.88);
+  --bg-card-strong: rgba(255, 255, 255, 0.94);
+  --bg-header: rgba(255, 255, 255, 0.55);
   --border: rgba(20, 40, 30, 0.08);
+  --border-strong: rgba(20, 40, 30, 0.12);
+  --card-edge: rgba(255, 255, 255, 0.85);
   --text: #1a1c1a;
   --text-dim: #6e7370;
   --text-mid: #3c403e;
-  --accent: #2fbf71;
-  --accent-soft: rgba(47, 191, 113, 0.14);
-  --warn: #e8a317;
-  --warn-soft: rgba(232, 163, 23, 0.16);
-  --bad: #e5484d;
-  --bad-soft: rgba(229, 72, 77, 0.14);
-  --info: #3b9eff;
-  --info-soft: rgba(59, 158, 255, 0.14);
+  --hover: rgba(20, 40, 30, 0.06);
+  --hairline: rgba(20, 40, 30, 0.1);
   --shadow: 0 8px 24px rgba(20, 40, 30, 0.06);
-  --radius: 18px;
-  --radius-sm: 12px;
+  --scrollbar: rgba(20, 40, 30, 0.15);
+  --core-bar: linear-gradient(180deg, #6ee7a8, #2fbf71);
+  --core-bar-hot: linear-gradient(180deg, #ff9aa0, #e5484d);
+  --bar-track: rgba(20, 40, 30, 0.07);
+  color-scheme: light;
+}
+
+/* ---------- 深色 ---------- */
+[data-theme='dark'] {
+  --bg-panel: rgba(28, 30, 32, var(--panel-alpha));
+  --bg-capsule: rgba(32, 34, 36, var(--panel-alpha));
+  --bg-card: rgba(48, 50, 52, 0.78);
+  --bg-card-strong: rgba(52, 54, 56, 0.92);
+  --bg-header: rgba(255, 255, 255, 0.06);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.12);
+  --card-edge: rgba(255, 255, 255, 0.08);
+  --text: rgba(255, 255, 255, 0.94);
+  --text-dim: rgba(255, 255, 255, 0.55);
+  --text-mid: rgba(255, 255, 255, 0.72);
+  --hover: rgba(255, 255, 255, 0.08);
+  --hairline: rgba(255, 255, 255, 0.12);
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  --scrollbar: rgba(255, 255, 255, 0.18);
+  --core-bar: linear-gradient(180deg, #3dd68c, #2fbf71);
+  --core-bar-hot: linear-gradient(180deg, #ff8a8e, #e5484d);
+  --bar-track: rgba(255, 255, 255, 0.1);
+  /* 深色下略提亮强调色，保证对比度 */
+  --accent: #34d07a;
+  --accent-soft: rgba(52, 208, 122, 0.2);
+  --warn: #f0b429;
+  --warn-soft: rgba(240, 180, 41, 0.2);
+  --bad: #ff6961;
+  --bad-soft: rgba(255, 105, 97, 0.18);
+  --info: #64a8ff;
+  --info-soft: rgba(100, 168, 255, 0.2);
+  color-scheme: dark;
 }
 
 * {
@@ -39,11 +89,6 @@ body {
   user-select: none;
 }
 
-/*
- * #app = 窗口可视区域本体。
- * 关键：overflow:hidden + border-radius 做硬裁切；
- * 不用 backdrop-filter（WebView2 上会在四角留下方形合成杂色）。
- */
 #app {
   width: 100%;
   height: 100%;
@@ -53,20 +98,18 @@ body {
   gap: 10px;
   background: var(--bg-panel);
   border-radius: var(--radius);
-  border: 1px solid rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--card-edge);
   overflow: hidden;
-  /* 阴影画在内侧描边，避免溢出到圆角外 */
-  box-shadow: inset 0 0 0 1px rgba(20, 40, 30, 0.04);
+  box-shadow: inset 0 0 0 1px var(--hairline);
 }
 
-/* 胶囊：整窗就是一条 pill */
 #app.is-capsule {
   padding: 0;
   gap: 0;
   border-radius: 999px;
   background: var(--bg-capsule);
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  box-shadow: inset 0 0 0 1px rgba(20, 40, 30, 0.05);
+  border: 1px solid var(--card-edge);
+  box-shadow: inset 0 0 0 1px var(--hairline);
 }
 
 ::-webkit-scrollbar {
@@ -78,6 +121,6 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(20, 40, 30, 0.15);
+  background: var(--scrollbar);
   border-radius: 2px;
 }

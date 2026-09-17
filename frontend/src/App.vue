@@ -15,7 +15,7 @@ import NetworkCard from './components/NetworkCard.vue'
 import SettingsView from './components/SettingsView.vue'
 import CapsuleView from './components/CapsuleView.vue'
 import { Ring } from './lib/ring'
-import { applyUiPrefs, loadUiPrefs, type UiPrefs } from './lib/prefs'
+import { applyUiPrefs, loadUiPrefs, watchSystemTheme, type UiPrefs } from './lib/prefs'
 import {
   cpuStatus,
   diskStatus,
@@ -58,6 +58,7 @@ let unlistenTick: UnlistenFn | undefined
 let unlistenOpened: UnlistenFn | undefined
 let unlistenPause: UnlistenFn | undefined
 let unlistenExpand: UnlistenFn | undefined
+let unwatchSystemTheme: (() => void) | undefined
 
 const device = computed(() => snap.value?.device ?? null)
 const health = computed(() => snap.value?.health ?? null)
@@ -121,6 +122,10 @@ watch(snap, (s) => {
 onMounted(async () => {
   applyUiPrefs(uiPrefs.value)
   syncRootClass()
+  unwatchSystemTheme = watchSystemTheme(
+    () => uiPrefs.value,
+    () => applyUiPrefs(uiPrefs.value),
+  )
 
   unlistenTick = await listen<Snapshot>('snapshot://tick', (e) => {
     snap.value = e.payload
@@ -136,6 +141,15 @@ onMounted(async () => {
   window.addEventListener('keydown', onKeyDown)
 })
 
+onUnmounted(() => {
+  unlistenTick?.()
+  unlistenOpened?.()
+  unlistenPause?.()
+  unlistenExpand?.()
+  unwatchSystemTheme?.()
+  window.removeEventListener('keydown', onKeyDown)
+})
+
 watch(mode, () => syncRootClass())
 
 /** 胶囊态把整窗变成 pill 圆角（#app.is-capsule） */
@@ -149,14 +163,6 @@ function onUiPrefsChange(prefs: UiPrefs) {
   uiPrefs.value = prefs
   applyUiPrefs(prefs)
 }
-
-onUnmounted(() => {
-  unlistenTick?.()
-  unlistenOpened?.()
-  unlistenPause?.()
-  unlistenExpand?.()
-  window.removeEventListener('keydown', onKeyDown)
-})
 
 function onKeyDown(e: KeyboardEvent) {
   if (e.key === 'Escape') {
@@ -459,7 +465,7 @@ function quit() {
 }
 
 .grid::-webkit-scrollbar-thumb {
-  background: rgba(20, 40, 30, 0.15);
+  background: var(--scrollbar);
   border-radius: 2px;
 }
 </style>

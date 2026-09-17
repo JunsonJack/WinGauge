@@ -49,7 +49,7 @@ defineProps<{
 <style scoped>
 .card {
   background: var(--bg-card-strong);
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--card-edge);
   border-radius: var(--radius);
   padding: 12px 14px;
   box-shadow: var(--shadow);
@@ -126,7 +126,7 @@ defineProps<{
 .bar-track {
   height: 5px;
   border-radius: 999px;
-  background: rgba(20, 40, 30, 0.07);
+  background: var(--bar-track);
   overflow: hidden;
   margin-bottom: 2px;
 }

@@ -218,7 +218,7 @@ const healthTone = computed(() => {
 .sep {
   width: 1px;
   height: 20px;
-  background: rgba(20, 40, 30, 0.1);
+  background: var(--hairline);
   margin: 0 2px;
   flex-shrink: 0;
 }
@@ -244,7 +244,7 @@ const healthTone = computed(() => {
 }
 
 .icon-btn:hover {
-  background: rgba(20, 40, 30, 0.07);
+  background: var(--hover);
   color: var(--text);
 }
 

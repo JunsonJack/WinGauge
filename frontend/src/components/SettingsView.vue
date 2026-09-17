@@ -1,7 +1,14 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import { invoke } from '@tauri-apps/api/core'
-import { clampOpacity, saveUiPrefs, type UiPrefs } from '../lib/prefs'
+import {
+  clampOpacity,
+  normalizeTheme,
+  saveUiPrefs,
+  THEME_LABELS,
+  type ThemeMode,
+  type UiPrefs,
+} from '../lib/prefs'
 
 const props = defineProps<{
   prefs: UiPrefs
@@ -17,20 +24,28 @@ const autostartBusy = ref(false)
 const version = ref('0.1.0')
 const error = ref('')
 const opacity = ref(props.prefs.opacity)
+const theme = ref<ThemeMode>(props.prefs.theme)
 
 watch(
   () => props.prefs,
   (p) => {
     opacity.value = p.opacity
+    theme.value = p.theme
   },
   { deep: true },
 )
 
-watch(opacity, (v) => {
-  const next = { opacity: clampOpacity(v) }
+function emitPrefs() {
+  const next: UiPrefs = {
+    opacity: clampOpacity(opacity.value),
+    theme: normalizeTheme(theme.value),
+  }
   saveUiPrefs(next)
   emit('prefs', next)
-})
+}
+
+watch(opacity, () => emitPrefs())
+watch(theme, () => emitPrefs())
 
 onMounted(async () => {
   try {
@@ -72,6 +87,12 @@ function resetOpacity() {
   opacity.value = 0.92
 }
 
+const themeOptions: { value: ThemeMode; hint: string }[] = [
+  { value: 'light', hint: '始终浅色' },
+  { value: 'dark', hint: '始终深色' },
+  { value: 'system', hint: '与 Windows 一致' },
+]
+
 const opacityPct = computed(() => `${Math.round(opacity.value * 100)}%`)
 const year = computed(() => new Date().getFullYear())
 </script>
@@ -81,6 +102,34 @@ const year = computed(() => new Date().getFullYear())
     <div class="head">
       <span class="title">设置</span>
       <button class="close" title="关闭" @click="emit('close')">✕</button>
+    </div>
+
+    <div class="row static col">
+      <div class="row-top">
+        <div>
+          <div class="label">外观主题</div>
+          <div class="hint">浅色 / 深色，或跟随系统</div>
+        </div>
+        <span class="badge">{{ THEME_LABELS[theme] }}</span>
+      </div>
+      <div class="seg" role="radiogroup" aria-label="外观主题">
+        <button
+          v-for="opt in themeOptions"
+          :key="opt.value"
+          type="button"
+          class="seg-btn"
+          :class="{ active: theme === opt.value }"
+          :title="opt.hint"
+          role="radio"
+          :aria-checked="theme === opt.value"
+          @click="theme = opt.value"
+        >
+          <span v-if="opt.value === 'light'" class="seg-icon">☀</span>
+          <span v-else-if="opt.value === 'dark'" class="seg-icon">☾</span>
+          <span v-else class="seg-icon">◐</span>
+          {{ THEME_LABELS[opt.value] }}
+        </button>
+      </div>
     </div>
 
     <label class="row">
@@ -173,7 +222,7 @@ const year = computed(() => new Date().getFullYear())
 }
 
 .close:hover {
-  background: rgba(20, 40, 30, 0.06);
+  background: var(--hover);
   color: var(--text);
 }
 
@@ -229,6 +278,47 @@ const year = computed(() => new Date().getFullYear())
   font-variant-numeric: tabular-nums;
 }
 
+.seg {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  padding: 4px;
+  border-radius: 12px;
+  background: var(--hover);
+  border: 1px solid var(--border);
+}
+
+.seg-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-dim);
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 9px;
+  padding: 8px 6px;
+  cursor: pointer;
+}
+
+.seg-btn:hover {
+  color: var(--text);
+}
+
+.seg-btn.active {
+  background: var(--bg-card-strong);
+  color: var(--text);
+  border-color: var(--border);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.seg-icon {
+  font-size: 13px;
+  line-height: 1;
+}
+
 .slider-row {
   display: flex;
   align-items: center;
@@ -255,7 +345,7 @@ const year = computed(() => new Date().getFullYear())
 
 .ghost:hover {
   color: var(--text);
-  background: rgba(20, 40, 30, 0.04);
+  background: var(--hover);
 }
 
 .slider-marks {

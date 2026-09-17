@@ -43,11 +43,11 @@ const bars = computed(() => {
   flex: 1;
   min-width: 4px;
   border-radius: 3px 3px 2px 2px;
-  background: linear-gradient(180deg, #6ee7a8, var(--accent));
+  background: var(--core-bar);
   transition: height 0.28s ease;
 }
 
 .core[data-hot='true'] {
-  background: linear-gradient(180deg, #ff9aa0, var(--bad));
+  background: var(--core-bar-hot);
 }
 </style>

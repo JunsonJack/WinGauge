@@ -60,7 +60,7 @@ const tone = computed(() => {
   padding: 12px 14px;
   border-radius: var(--radius);
   background: var(--bg-card-strong);
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--card-edge);
   box-shadow: var(--shadow);
 }
 

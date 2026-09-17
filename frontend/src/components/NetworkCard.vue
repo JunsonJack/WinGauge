@@ -59,7 +59,7 @@ defineProps<{
 .net-card {
   grid-column: 1 / -1;
   background: var(--bg-card-strong);
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--card-edge);
   border-radius: var(--radius);
   padding: 12px 14px;
   box-shadow: var(--shadow);
