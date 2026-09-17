@@ -58,6 +58,7 @@ let unlistenTick: UnlistenFn | undefined
 let unlistenOpened: UnlistenFn | undefined
 let unlistenPause: UnlistenFn | undefined
 let unlistenExpand: UnlistenFn | undefined
+let unlistenOpenSettings: UnlistenFn | undefined
 let unwatchSystemTheme: (() => void) | undefined
 
 const device = computed(() => snap.value?.device ?? null)
@@ -134,6 +135,10 @@ onMounted(async () => {
   unlistenPause = await listen<boolean>('tray://pause-toggled', (e) => {
     paused.value = e.payload === true
   })
+  // 托盘右键「设置…」
+  unlistenOpenSettings = await listen('tray://open-settings', () => {
+    void openSettingsFromTray()
+  })
   // 托盘点胶囊时：Rust 请求展开
   unlistenExpand = await listen('panel://expand-from-capsule', () => {
     void expandFromCapsule()
@@ -141,11 +146,26 @@ onMounted(async () => {
   window.addEventListener('keydown', onKeyDown)
 })
 
+/** 托盘菜单打开设置：先确保面板可见再进设置页 */
+async function openSettingsFromTray() {
+  if (isCapsule.value) {
+    await expandFromCapsule()
+  }
+  mode.value = 'settings'
+  try {
+    await panel.show()
+    await panel.setFocus()
+  } catch {
+    /* ignore */
+  }
+}
+
 onUnmounted(() => {
   unlistenTick?.()
   unlistenOpened?.()
   unlistenPause?.()
   unlistenExpand?.()
+  unlistenOpenSettings?.()
   unwatchSystemTheme?.()
   window.removeEventListener('keydown', onKeyDown)
 })

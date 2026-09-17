@@ -73,7 +73,8 @@ async fn check_update() -> update::UpdateCheckResult {
     update::check_update(env!("CARGO_PKG_VERSION").to_string()).await
 }
 
-/// 用系统默认浏览器打开 https 链接（下载/Release 页）
+/// 用系统默认浏览器打开 https 链接（下载/Release 页）。
+/// 走 explorer 而非 cmd start，少一层 shell，且配合 CREATE_NO_WINDOW 不闪窗。
 #[tauri::command]
 fn open_external(url: String) -> Result<(), String> {
     use std::os::windows::process::CommandExt;
@@ -83,8 +84,8 @@ fn open_external(url: String) -> Result<(), String> {
     if !(trimmed.starts_with("https://") || trimmed.starts_with("http://")) {
         return Err("仅允许打开 http(s) 链接".into());
     }
-    std::process::Command::new("cmd")
-        .args(["/C", "start", "", trimmed])
+    std::process::Command::new("explorer")
+        .arg(trimmed)
         .stdin(std::process::Stdio::null())
         .stdout(std::process::Stdio::null())
         .stderr(std::process::Stdio::null())

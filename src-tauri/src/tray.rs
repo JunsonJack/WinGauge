@@ -16,6 +16,13 @@ const MENU_SETTINGS: &str = "menu_settings";
 const MENU_QUIT: &str = "menu_quit";
 
 pub fn setup(app: &App) -> tauri::Result<()> {
+    // 全程只在这里创建托盘；不要在 tauri.conf.json 再声明 trayIcon，
+    // 否则 Tauri 2 会叠出第二个图标（已踩过）。
+    if app.tray_by_id("main").is_some() {
+        log::warn!("tray id=main already exists, skip rebuild");
+        return Ok(());
+    }
+
     let pause = MenuItem::with_id(app, MENU_PAUSE, "暂停采样", true, None::<&str>)?;
     let settings = MenuItem::with_id(app, MENU_SETTINGS, "设置…", true, None::<&str>)?;
     let quit = MenuItem::with_id(app, MENU_QUIT, "退出 WinGauge", true, None::<&str>)?;
