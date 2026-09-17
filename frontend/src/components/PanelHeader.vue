@@ -9,17 +9,24 @@ defineProps<{
 const emit = defineEmits<{
   pin: []
   settings: []
-  // 不能用 dragstart 这个名字：它是 DOM 原生保留事件，Vue 会按 HTML5 拖拽处理，
-  // 自定义事件永远不触发。改名 header-mousedown
-  'header-mousedown': [e: MouseEvent]
+  drag: []
 }>()
 </script>
 
 <template>
-  <header class="header" @mousedown="emit('header-mousedown', $event)">
-    <div class="titles">
-      <div class="title">{{ title }}</div>
-      <div v-if="subtitle" class="subtitle">{{ subtitle }}</div>
+  <header
+    class="header"
+    @mousedown.left="emit('drag')"
+  >
+    <div class="brand">
+      <svg class="logo" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <rect x="3" y="4" width="18" height="12" rx="2" />
+        <path d="M2 19h20" />
+      </svg>
+      <div class="titles">
+        <div class="title">{{ title }}</div>
+        <div v-if="subtitle" class="subtitle">{{ subtitle }}</div>
+      </div>
     </div>
     <div class="actions">
       <button
@@ -54,9 +61,10 @@ const emit = defineEmits<{
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 8px;
-  border-radius: 10px;
-  background: var(--bg-card);
+  padding: 8px 10px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.65);
   cursor: grab;
 }
 
@@ -64,18 +72,32 @@ const emit = defineEmits<{
   cursor: grabbing;
 }
 
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.logo {
+  color: var(--text-mid);
+  flex-shrink: 0;
+}
+
 .titles {
   min-width: 0;
 }
 
 .title {
-  font-weight: 600;
+  font-weight: 650;
   font-size: 14px;
+  letter-spacing: -0.01em;
 }
 
 .subtitle {
   color: var(--text-dim);
   font-size: 11px;
+  margin-top: 1px;
 }
 
 .actions {
@@ -87,22 +109,22 @@ const emit = defineEmits<{
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   border: none;
-  border-radius: 8px;
+  border-radius: 9px;
   background: transparent;
   color: var(--text-dim);
   cursor: pointer;
 }
 
 .icon-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(20, 40, 30, 0.06);
   color: var(--text);
 }
 
 .icon-btn.active {
   color: var(--accent);
-  background: rgba(52, 199, 89, 0.14);
+  background: var(--accent-soft);
 }
 </style>

@@ -5,10 +5,11 @@
   "description": "Windows 托盘悬浮系统监控面板",
   "scripts": {
     "dev": "npm run dev --prefix frontend",
+    "build": "npm run build --prefix frontend",
     "build:ui": "npm run build --prefix frontend",
     "tauri": "npx --yes @tauri-apps/cli",
-    "tauri:dev": "npm run build:ui && npx --yes @tauri-apps/cli dev",
-    "tauri:build": "npm run build:ui && npx --yes @tauri-apps/cli build",
+    "tauri:dev": "npm run build && npx --yes @tauri-apps/cli dev",
+    "tauri:build": "npm run build && npx --yes @tauri-apps/cli build",
     "smoke": "cargo run -p wingauge-core --example smoke_tick",
     "test": "cargo test -p wingauge-core"
   }

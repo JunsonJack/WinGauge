@@ -2,9 +2,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { invoke } from '@tauri-apps/api/core'
 
-const emit = defineEmits<{
-  close: []
-}>()
+const emit = defineEmits<{ close: [] }>()
 
 const autostart = ref(false)
 const autostartBusy = ref(false)
@@ -60,7 +58,7 @@ const year = computed(() => new Date().getFullYear())
     <label class="row">
       <div>
         <div class="label">开机自启</div>
-        <div class="hint">写入 HKCU\\…\\Run，可被任务管理器管理</div>
+        <div class="hint">写入 HKCU Run，可被任务管理器管理</div>
       </div>
       <input type="checkbox" :checked="autostart" :disabled="autostartBusy" @change="toggleAutostart" />
     </label>
@@ -76,7 +74,7 @@ const year = computed(() => new Date().getFullYear())
     <div class="row static">
       <div>
         <div class="label">隐私</div>
-        <div class="hint">本机自用，无云同步 / 无遥测 / 不记键鼠内容</div>
+        <div class="hint">本机自用 · 无云同步 · 无遥测 · 不记键鼠内容</div>
       </div>
     </div>
 
@@ -97,7 +95,7 @@ const year = computed(() => new Date().getFullYear())
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 4px 2px;
+  padding: 2px 0;
 }
 
 .head {
@@ -107,22 +105,22 @@ const year = computed(() => new Date().getFullYear())
 }
 
 .title {
-  font-weight: 600;
+  font-weight: 650;
   font-size: 14px;
 }
 
 .close {
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   border: none;
-  border-radius: 8px;
+  border-radius: 9px;
   background: transparent;
   color: var(--text-dim);
   cursor: pointer;
 }
 
 .close:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(20, 40, 30, 0.06);
   color: var(--text);
 }
 
@@ -131,10 +129,11 @@ const year = computed(() => new Date().getFullYear())
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  background: var(--bg-card-strong);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: var(--shadow);
   cursor: pointer;
 }
 
@@ -144,7 +143,7 @@ const year = computed(() => new Date().getFullYear())
 
 .label {
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .hint {
@@ -156,8 +155,9 @@ const year = computed(() => new Date().getFullYear())
 
 .badge {
   font-size: 11px;
+  font-weight: 600;
   color: var(--accent);
-  background: rgba(52, 199, 89, 0.14);
+  background: var(--accent-soft);
   padding: 2px 8px;
   border-radius: 999px;
 }
@@ -185,16 +185,17 @@ input[type='checkbox'] {
 }
 
 .quit {
-  border: 1px solid rgba(255, 69, 58, 0.35);
-  background: rgba(255, 69, 58, 0.1);
-  color: #ff6961;
-  border-radius: 8px;
-  padding: 4px 10px;
+  border: 1px solid rgba(229, 72, 77, 0.3);
+  background: var(--bad-soft);
+  color: var(--bad);
+  border-radius: 9px;
+  padding: 5px 10px;
   font-size: 11px;
+  font-weight: 600;
   cursor: pointer;
 }
 
 .quit:hover {
-  background: rgba(255, 69, 58, 0.18);
+  background: rgba(229, 72, 77, 0.22);
 }
 </style>

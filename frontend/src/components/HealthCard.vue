@@ -5,6 +5,8 @@ import { bandLabel } from '../lib/metrics'
 
 const props = defineProps<{
   health: HealthSnapshot | null
+  bootLine?: string
+  uptimeShort?: string
 }>()
 
 const score = computed(() => props.health?.score ?? null)
@@ -22,68 +24,95 @@ const tone = computed(() => {
 
 <template>
   <section class="health" :data-tone="tone">
-    <div class="score-col">
+    <div class="head">
+      <span class="label">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/></svg>
+        健康度
+      </span>
+      <span class="pill">{{ band }}</span>
+    </div>
+
+    <div class="body">
       <div class="score">{{ score ?? '—' }}</div>
-      <div class="score-cap">健康度</div>
+      <div class="meta">
+        <div class="summary">{{ summary }}</div>
+        <div v-if="bootLine" class="boot">{{ bootLine }}</div>
+      </div>
+      <div class="check" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
     </div>
-    <div class="meta">
-      <div class="band">{{ band }}</div>
-      <div class="summary">{{ summary }}</div>
-      <ul v-if="health?.issues?.length" class="issues">
-        <li v-for="issue in health.issues" :key="issue.metric + issue.reason">
-          −{{ issue.points }} · {{ issue.reason }}
-        </li>
-      </ul>
-    </div>
+
+    <ul v-if="health?.issues?.length" class="issues">
+      <li v-for="issue in health.issues" :key="issue.metric + issue.reason">
+        −{{ issue.points }} · {{ issue.reason }}
+      </li>
+    </ul>
+
+    <div v-if="uptimeShort" class="foot">已运行 {{ uptimeShort }}</div>
   </section>
 </template>
 
 <style scoped>
 .health {
-  display: flex;
-  gap: 14px;
-  align-items: center;
   padding: 12px 14px;
   border-radius: var(--radius);
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  background: var(--bg-card-strong);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: var(--shadow);
 }
 
-.health[data-tone='excellent'] {
-  border-color: rgba(52, 199, 89, 0.4);
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
 }
 
-.health[data-tone='good'] {
-  border-color: rgba(48, 209, 88, 0.35);
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-mid);
 }
 
-.health[data-tone='watch'] {
-  border-color: rgba(255, 214, 10, 0.45);
+.pill {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-soft);
+  padding: 2px 8px;
+  border-radius: 999px;
 }
 
-.health[data-tone='critical'] {
-  border-color: rgba(255, 69, 58, 0.5);
+.health[data-tone='watch'] .pill {
+  color: var(--warn);
+  background: var(--warn-soft);
 }
 
-.score-col {
-  min-width: 64px;
-  text-align: center;
+.health[data-tone='critical'] .pill {
+  color: var(--bad);
+  background: var(--bad-soft);
+}
+
+.body {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .score {
-  font-size: 36px;
-  font-weight: 700;
+  font-size: 44px;
+  font-weight: 750;
   line-height: 1;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.02em;
-}
-
-.health[data-tone='excellent'] .score {
+  letter-spacing: -0.04em;
   color: var(--accent);
-}
-
-.health[data-tone='good'] .score {
-  color: #30d158;
+  min-width: 72px;
+  font-variant-numeric: tabular-nums;
 }
 
 .health[data-tone='watch'] .score {
@@ -94,37 +123,55 @@ const tone = computed(() => {
   color: var(--bad);
 }
 
-.score-cap {
-  margin-top: 4px;
-  font-size: 10px;
-  color: var(--text-dim);
-}
-
 .meta {
   flex: 1;
   min-width: 0;
 }
 
-.band {
-  font-weight: 600;
-  font-size: 14px;
+.summary {
+  font-size: 15px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
 }
 
-.summary {
-  margin-top: 2px;
+.boot {
+  margin-top: 3px;
   font-size: 11px;
   color: var(--text-dim);
 }
 
+.check {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(47, 191, 113, 0.35);
+}
+
+.health[data-tone='watch'] .check {
+  background: var(--warn);
+  box-shadow: 0 4px 12px rgba(232, 163, 23, 0.3);
+}
+
+.health[data-tone='critical'] .check {
+  background: var(--bad);
+  box-shadow: 0 4px 12px rgba(229, 72, 77, 0.3);
+}
+
 .issues {
-  margin-top: 6px;
-  padding: 0;
+  margin-top: 8px;
   list-style: none;
   font-size: 11px;
   color: var(--text-dim);
 }
 
-.issues li {
-  padding: 1px 0;
+.foot {
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--text-dim);
 }
 </style>

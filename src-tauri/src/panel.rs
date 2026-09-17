@@ -62,31 +62,18 @@ pub fn setup(app: &tauri::App, window: WebviewWindow) -> tauri::Result<()> {
         });
     }
 
-    // 前端拖动：收到的增量位移，由 Rust 侧叠加到窗口当前物理位置。
-    // 增量而非绝对坐标，避免多屏 DPI 混合下 screenX 与窗口坐标系换算失真
-    let w = window.clone();
-    window.listen("panel/drag-delta", move |event: Event| {
-        if let Ok((dx, dy)) = serde_json::from_str::<(i32, i32)>(event.payload()) {
-            let Ok(pos) = w.outer_position() else {
-                return;
-            };
-            let mut x = pos.x + dx;
-            let mut y = pos.y + dy;
-
-            // 约束进工作区，不能拖出屏幕
-            if let Ok(Some(monitor)) = w.current_monitor() {
-                let area = monitor.work_area();
-                let size = w.outer_size().unwrap_or_default();
-                let max_x = area.position.x + area.size.width as i32 - size.width as i32;
-                let max_y = area.position.y + area.size.height as i32 - size.height as i32;
-                x = x.clamp(area.position.x, max_x);
-                y = y.clamp(area.position.y, max_y);
+    // 前端已改用系统原生 startDragging（丝滑、可跨屏）。
+    // 位置记忆挂在 Moved 事件上，拖完自动记，不再靠 drag-delta IPC。
+    {
+        let w = window.clone();
+        window.on_window_event(move |event| {
+            if let tauri::WindowEvent::Moved(pos) = event {
+                if w.state::<PanelState>().is_pinned() {
+                    w.state::<PanelState>().remember_pos(pos.x, pos.y);
+                }
             }
-
-            let _ = crate::move_to(&w, x, y);
-            w.state::<PanelState>().remember_pos(x, y);
-        }
-    });
+        });
+    }
 
     // 失焦收起：延迟 150ms 并复查钉住态与聚焦态（R5 竞争防护）
     let w = window.clone();

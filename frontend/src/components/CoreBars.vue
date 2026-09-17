@@ -5,7 +5,7 @@ const props = defineProps<{
   cores: number[]
 }>()
 
-/** 最多显示 16 核，更多时抽稀以免柱子过密 */
+/** 最多显示 16 核，更多时抽稀 */
 const bars = computed(() => {
   const src = props.cores ?? []
   if (src.length <= 16) return src
@@ -24,7 +24,7 @@ const bars = computed(() => {
       v-for="(v, i) in bars"
       :key="i"
       class="core"
-      :style="{ height: Math.max(2, Math.min(100, v)) + '%' }"
+      :style="{ height: Math.max(8, Math.min(100, v)) + '%' }"
       :data-hot="v >= 80"
     />
   </div>
@@ -34,20 +34,20 @@ const bars = computed(() => {
 .cores {
   display: flex;
   align-items: flex-end;
-  gap: 2px;
-  height: 28px;
+  gap: 3px;
+  height: 36px;
   margin-top: 8px;
 }
 
 .core {
   flex: 1;
-  min-width: 3px;
-  border-radius: 2px 2px 0 0;
-  background: rgba(52, 199, 89, 0.55);
-  transition: height 0.25s ease;
+  min-width: 4px;
+  border-radius: 3px 3px 2px 2px;
+  background: linear-gradient(180deg, #6ee7a8, var(--accent));
+  transition: height 0.28s ease;
 }
 
 .core[data-hot='true'] {
-  background: rgba(255, 69, 58, 0.75);
+  background: linear-gradient(180deg, #ff9aa0, var(--bad));
 }
 </style>

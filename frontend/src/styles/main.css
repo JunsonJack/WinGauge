@@ -1,13 +1,23 @@
 :root {
-  --bg: rgba(28, 28, 30, 0.92);
-  --bg-card: rgba(44, 44, 46, 0.72);
-  --border: rgba(255, 255, 255, 0.08);
-  --text: rgba(255, 255, 255, 0.94);
-  --text-dim: rgba(255, 255, 255, 0.55);
-  --accent: #34c759;
-  --warn: #ffd60a;
-  --bad: #ff453a;
-  --radius: 14px;
+  /* 参考图：浅色毛玻璃，薄荷绿点缀 */
+  --bg: rgba(245, 250, 248, 0.88);
+  --bg-card: rgba(255, 255, 255, 0.78);
+  --bg-card-strong: rgba(255, 255, 255, 0.92);
+  --border: rgba(20, 40, 30, 0.08);
+  --text: #1a1c1a;
+  --text-dim: #6e7370;
+  --text-mid: #3c403e;
+  --accent: #2fbf71;
+  --accent-soft: rgba(47, 191, 113, 0.14);
+  --warn: #e8a317;
+  --warn-soft: rgba(232, 163, 23, 0.16);
+  --bad: #e5484d;
+  --bad-soft: rgba(229, 72, 77, 0.14);
+  --info: #3b9eff;
+  --info-soft: rgba(59, 158, 255, 0.14);
+  --shadow: 0 8px 28px rgba(20, 40, 30, 0.08);
+  --radius: 16px;
+  --radius-sm: 12px;
 }
 
 * {
@@ -23,7 +33,7 @@ body,
   overflow: hidden;
   background: transparent;
   color: var(--text);
-  font-family: 'Segoe UI', 'Microsoft YaHei', system-ui, sans-serif;
+  font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
   font-size: 13px;
   -webkit-user-select: none;
   user-select: none;
@@ -32,11 +42,21 @@ body,
 #app {
   display: flex;
   flex-direction: column;
-  padding: 10px;
-  gap: 8px;
-  /* 外层透明 + 内层圆角，避免透明窗口四角露出直角 */
-  background: var(--bg);
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  backdrop-filter: blur(20px);
+  padding: 12px 12px 10px;
+  gap: 10px;
+  background:
+    linear-gradient(165deg, rgba(220, 245, 235, 0.95) 0%, rgba(245, 250, 248, 0.92) 42%, rgba(232, 242, 255, 0.9) 100%);
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 16px 48px rgba(20, 40, 30, 0.18);
+  backdrop-filter: blur(28px) saturate(1.2);
+}
+
+/* 滚动条 */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(20, 40, 30, 0.15);
+  border-radius: 2px;
 }

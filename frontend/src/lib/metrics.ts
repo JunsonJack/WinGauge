@@ -80,7 +80,6 @@ export function formatBytes(n: number, digits = 1): string {
 
 export function formatRate(bps: number): string {
   if (!Number.isFinite(bps) || bps < 0) return '—'
-  // bytes/s → 带单位的速率
   return `${formatBytes(bps, bps >= 1024 * 1024 ? 1 : 0)}/s`
 }
 
@@ -94,6 +93,26 @@ export function formatUptime(secs: number): string {
   return `${m}分`
 }
 
+export function formatUptimeShort(secs: number): string {
+  if (!Number.isFinite(secs) || secs <= 0) return '—'
+  const d = Math.floor(secs / 86400)
+  if (d > 0) return `${d} 天`
+  const h = Math.floor(secs / 3600)
+  if (h > 0) return `${h} 小时`
+  return `${Math.floor(secs / 60)} 分`
+}
+
+/** 根据 uptime 反推启动时间文案：「自 9月11日 09:09 启动」 */
+export function formatBootLine(uptimeSecs: number): string {
+  if (!Number.isFinite(uptimeSecs) || uptimeSecs <= 0) return ''
+  const boot = new Date(Date.now() - uptimeSecs * 1000)
+  const mo = boot.getMonth() + 1
+  const d = boot.getDate()
+  const hh = String(boot.getHours()).padStart(2, '0')
+  const mm = String(boot.getMinutes()).padStart(2, '0')
+  return `自 ${mo}月${d}日 ${hh}:${mm} 启动`
+}
+
 export function bandLabel(band: HealthBand | null | undefined): string {
   switch (band) {
     case 'excellent':
@@ -103,6 +122,7 @@ export function bandLabel(band: HealthBand | null | undefined): string {
     case 'watch':
       return '需注意'
     case 'critical':
+      return '异常'
     default:
       return '—'
   }
@@ -124,4 +144,16 @@ export function diskStatus(usage: number): 'ok' | 'warn' | 'bad' {
   if (usage >= 95) return 'bad'
   if (usage >= 90) return 'warn'
   return 'ok'
+}
+
+export function statusBadge(status: 'ok' | 'warn' | 'bad'): string {
+  if (status === 'bad') return '异常'
+  if (status === 'warn') return '偏高'
+  return '正常'
+}
+
+export function loadLabel(usage: number): string {
+  if (usage < 30) return '低负载'
+  if (usage < 70) return '中负载'
+  return '高负载'
 }

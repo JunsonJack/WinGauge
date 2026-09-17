@@ -1,20 +1,26 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-const props = defineProps<{
-  /** 0..100 或任意非负值；内部按 max 归一 */
-  values: number[]
-  max?: number
-  color?: string
-  height?: number
-}>()
+const props = withDefaults(
+  defineProps<{
+    values: number[]
+    values2?: number[]
+    max?: number
+    color?: string
+    color2?: string
+    height?: number
+  }>(),
+  {
+    color: '#3b9eff',
+    color2: '#2fbf71',
+    height: 48,
+  },
+)
 
-const W = 120
-const H = computed(() => props.height ?? 28)
+const W = 280
 
-const path = computed(() => {
-  const vals = props.values ?? []
-  if (vals.length < 2) return ''
+function buildPath(vals: number[], h: number): string {
+  if (!vals || vals.length < 2) return ''
   const cap = 60
   const slice = vals.length > cap ? vals.slice(-cap) : vals
   const maxV = Math.max(props.max ?? 100, ...slice, 1)
@@ -23,31 +29,28 @@ const path = computed(() => {
   let d = ''
   for (let i = 0; i < n; i += 1) {
     const x = i * step
-    const y = H.value - (slice[i] / maxV) * (H.value - 2) - 1
+    const y = h - (slice[i] / maxV) * (h - 3) - 1.5
     d += `${i === 0 ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)}`
   }
   return d
-})
+}
 
-const area = computed(() => {
-  const p = path.value
-  if (!p) return ''
-  return `${p}L${W},${H.value}L0,${H.value}Z`
-})
-
-const stroke = computed(() => props.color ?? 'var(--accent)')
+const path1 = computed(() => buildPath(props.values, props.height))
+const path2 = computed(() => (props.values2 ? buildPath(props.values2, props.height) : ''))
+const area1 = computed(() => (path1.value ? `${path1.value}L${W},${props.height}L0,${props.height}Z` : ''))
 </script>
 
 <template>
   <svg
     class="spark"
-    :width="'100%'"
-    :height="H"
-    :viewBox="`0 0 ${W} ${H}`"
+    width="100%"
+    :height="height"
+    :viewBox="`0 0 ${W} ${height}`"
     preserveAspectRatio="none"
   >
-    <path v-if="area" :d="area" :fill="stroke" opacity="0.15" />
-    <path v-if="path" :d="path" fill="none" :stroke="stroke" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" />
+    <path v-if="area1" :d="area1" :fill="color" opacity="0.18" />
+    <path v-if="path1" :d="path1" fill="none" :stroke="color" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" />
+    <path v-if="path2" :d="path2" fill="none" :stroke="color2" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round" />
   </svg>
 </template>
 
@@ -56,7 +59,5 @@ const stroke = computed(() => props.color ?? 'var(--accent)')
   display: block;
   width: 100%;
   margin-top: 6px;
-  border-radius: 4px;
-  overflow: hidden;
 }
 </style>
