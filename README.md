@@ -69,6 +69,21 @@ target\release\bundle\nsis\WinGauge_0.1.0_x64-setup.exe   # NSIS（推荐）
 target\release\bundle\msi\WinGauge_0.1.0_x64_en-US.msi    # MSI
 ```
 
+### 免安装（绿色版）
+
+解压即用，无需安装器：
+
+```text
+dist-portable\WinGauge-0.1.0-portable.zip
+```
+
+或自己打包：
+
+```powershell
+npm run tauri:portable   # 构建 release 并打 zip
+npm run portable         # 仅用现有 release exe 打 zip
+```
+
 安装后在开始菜单或托盘找到 WinGauge。**首次启动托盘图标可能在溢出区**，可固定到任务栏托盘。
 
 ### 开发

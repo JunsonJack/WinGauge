@@ -10,6 +10,8 @@
     "tauri": "npx --yes @tauri-apps/cli",
     "tauri:dev": "npm run build && npx --yes @tauri-apps/cli dev",
     "tauri:build": "npm run build && npx --yes @tauri-apps/cli build",
+    "tauri:portable": "npm run tauri:build; powershell -NoProfile -ExecutionPolicy Bypass -File scripts/pack-portable.ps1",
+    "portable": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/pack-portable.ps1",
     "smoke": "cargo run -p wingauge-core --example smoke_tick",
     "test": "cargo test -p wingauge-core"
   }
