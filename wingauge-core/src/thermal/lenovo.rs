@@ -131,6 +131,10 @@ foreach ($id in @({fans})) {{
 }
 
 fn run_ps(script: &str) -> Option<String> {
+    use std::os::windows::process::CommandExt;
+    // 隐藏控制台：否则每次采温度都会闪出 powershell 黑框
+    const CREATE_NO_WINDOW: u32 = 0x0800_0000;
+
     let out = std::process::Command::new("powershell")
         .args([
             "-NoProfile",
@@ -142,6 +146,8 @@ fn run_ps(script: &str) -> Option<String> {
         ])
         .stdout(std::process::Stdio::piped())
         .stderr(std::process::Stdio::null())
+        .stdin(std::process::Stdio::null())
+        .creation_flags(CREATE_NO_WINDOW)
         .output()
         .ok()?;
     if !out.status.success() && out.stdout.is_empty() {

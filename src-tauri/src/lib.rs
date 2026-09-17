@@ -76,12 +76,19 @@ async fn check_update() -> update::UpdateCheckResult {
 /// 用系统默认浏览器打开 https 链接（下载/Release 页）
 #[tauri::command]
 fn open_external(url: String) -> Result<(), String> {
+    use std::os::windows::process::CommandExt;
+    const CREATE_NO_WINDOW: u32 = 0x0800_0000;
+
     let trimmed = url.trim();
     if !(trimmed.starts_with("https://") || trimmed.starts_with("http://")) {
         return Err("仅允许打开 http(s) 链接".into());
     }
     std::process::Command::new("cmd")
         .args(["/C", "start", "", trimmed])
+        .stdin(std::process::Stdio::null())
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .creation_flags(CREATE_NO_WINDOW)
         .spawn()
         .map(|_| ())
         .map_err(|e| e.to_string())

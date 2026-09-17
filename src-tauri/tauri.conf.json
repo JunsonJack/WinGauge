@@ -10,13 +10,6 @@
     "beforeBuildCommand": "npm run build --prefix frontend"
   },
   "app": {
-    "trayIcon": {
-      "id": "main",
-      "iconPath": "icons/icon.png",
-      "iconAsTemplate": false,
-      "menuOnLeftClick": false,
-      "tooltip": "WinGauge"
-    },
     "windows": [
       {
         "label": "panel",
