@@ -11,15 +11,16 @@ import HealthCard from './components/HealthCard.vue'
 import DeviceHeader from './components/DeviceHeader.vue'
 import CoreBars from './components/CoreBars.vue'
 import Sparkline from './components/Sparkline.vue'
+import NetworkCard from './components/NetworkCard.vue'
 import SettingsView from './components/SettingsView.vue'
 import CapsuleView from './components/CapsuleView.vue'
 import { Ring } from './lib/ring'
+import { applyUiPrefs, loadUiPrefs, type UiPrefs } from './lib/prefs'
 import {
   cpuStatus,
   diskStatus,
   formatBootLine,
   formatBytes,
-  formatRate,
   formatUptime,
   formatUptimeShort,
   loadLabel,
@@ -39,6 +40,7 @@ const paused = ref(false)
 /** panel | capsule | settings（settings 仅在 panel 模式下有意义） */
 const mode = ref<'panel' | 'capsule' | 'settings'>('panel')
 const snap = ref<Snapshot | null>(null)
+const uiPrefs = ref<UiPrefs>(loadUiPrefs())
 
 const isCapsule = computed(() => mode.value === 'capsule')
 const isSettings = computed(() => mode.value === 'settings')
@@ -117,6 +119,9 @@ watch(snap, (s) => {
 })
 
 onMounted(async () => {
+  applyUiPrefs(uiPrefs.value)
+  syncRootClass()
+
   unlistenTick = await listen<Snapshot>('snapshot://tick', (e) => {
     snap.value = e.payload
   })
@@ -130,6 +135,20 @@ onMounted(async () => {
   })
   window.addEventListener('keydown', onKeyDown)
 })
+
+watch(mode, () => syncRootClass())
+
+/** 胶囊态把整窗变成 pill 圆角（#app.is-capsule） */
+function syncRootClass() {
+  const root = document.getElementById('app')
+  if (!root) return
+  root.classList.toggle('is-capsule', isCapsule.value)
+}
+
+function onUiPrefsChange(prefs: UiPrefs) {
+  uiPrefs.value = prefs
+  applyUiPrefs(prefs)
+}
 
 onUnmounted(() => {
   unlistenTick?.()
@@ -251,7 +270,12 @@ function quit() {
       @drag="startNativeDrag"
     />
 
-    <SettingsView v-if="isSettings" @close="mode = 'panel'" />
+    <SettingsView
+      v-if="isSettings"
+      :prefs="uiPrefs"
+      @close="mode = 'panel'"
+      @prefs="onUiPrefsChange"
+    />
 
     <template v-else>
       <DeviceHeader
@@ -320,38 +344,12 @@ function quit() {
           </template>
         </MetricCard>
 
-        <MetricCard
+        <NetworkCard
           v-if="network"
-          wide
-          icon="net"
-          label="网络"
-          :value="formatRate(network.downloadBps)"
-          value-unit="下行"
-          :badge="network.friendlyName"
-          badge-tone="info"
-        >
-          <template #body>
-            <div class="net-up">
-              <span class="up-dot" />
-              上行 {{ formatRate(network.uploadBps) }}
-            </div>
-            <Sparkline
-              :values="netDownSeries"
-              :values2="netUpSeries"
-              color="#3b9eff"
-              color2="#2fbf71"
-              :height="44"
-            />
-            <div class="net-legend">
-              <span><i class="dot down" />下行</span>
-              <span><i class="dot up" />上行</span>
-            </div>
-          </template>
-          <template #note>
-            ↓ {{ formatRate(network.downloadBps) }} · ↑ {{ formatRate(network.uploadBps) }} ·
-            {{ network.friendlyName }}
-          </template>
-        </MetricCard>
+          :network="network"
+          :down-series="netDownSeries"
+          :up-series="netUpSeries"
+        />
 
         <MetricCard
           v-if="disk"
@@ -416,48 +414,6 @@ function quit() {
   text-align: center;
   color: var(--text-dim);
   font-size: 12px;
-}
-
-.net-up {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  justify-content: flex-end;
-  margin-top: -2px;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--accent);
-}
-
-.up-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-}
-
-.net-legend {
-  display: flex;
-  gap: 12px;
-  margin-top: 4px;
-  font-size: 11px;
-  color: var(--text-dim);
-}
-
-.net-legend .dot {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  margin-right: 4px;
-}
-
-.dot.down {
-  background: #3b9eff;
-}
-
-.dot.up {
-  background: #2fbf71;
 }
 
 .fan-item {

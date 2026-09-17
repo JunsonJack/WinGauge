@@ -33,6 +33,7 @@ const healthTone = computed(() => {
 </script>
 
 <template>
+  <!-- 填满 #app（已是 pill 圆角），自身不再叠一层背景，避免双描边/四角杂色 -->
   <div
     class="capsule"
     :class="{ pinned }"
@@ -44,7 +45,9 @@ const healthTone = computed(() => {
     <div class="metric" :data-tone="cpuTone">
       <div class="v">{{ cpu ? `${cpu.usage.toFixed(0)}%` : '—' }}</div>
       <div class="k">
-        CPU<template v-if="tempText"> · <span :class="['temp', tempCls]">{{ tempText }}</span></template>
+        CPU<template v-if="tempText">
+          · <span :class="['temp', tempCls]">{{ tempText }}</span></template
+        >
       </div>
     </div>
 
@@ -58,8 +61,13 @@ const healthTone = computed(() => {
     <div class="sep" />
 
     <div class="metric net">
-      <div class="v">{{ network ? formatRate(network.downloadBps) : '—' }}</div>
-      <div class="k">下行</div>
+      <div class="v tiny">
+        <span class="dir down">↓</span>{{ network ? formatRate(network.downloadBps) : '—' }}
+      </div>
+      <div class="v tiny upv">
+        <span class="dir up">↑</span>{{ network ? formatRate(network.uploadBps) : '—' }}
+      </div>
+      <div class="k">上下行</div>
     </div>
 
     <div class="actions">
@@ -94,30 +102,19 @@ const healthTone = computed(() => {
 .capsule {
   display: flex;
   align-items: center;
-  gap: 2px;
+  justify-content: center;
+  width: 100%;
   height: 100%;
-  padding: 0 8px 0 12px;
-  border-radius: 999px;
-  background:
-    linear-gradient(120deg, rgba(220, 245, 235, 0.95), rgba(245, 250, 248, 0.94) 50%, rgba(228, 240, 255, 0.92));
-  border: 1px solid rgba(255, 255, 255, 0.75);
-  box-shadow:
-    0 8px 28px rgba(20, 40, 30, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  gap: 4px;
+  padding: 0 10px 0 14px;
+  position: relative;
   cursor: grab;
   user-select: none;
-  overflow: hidden;
+  /* 不画自己的 background —— 圆角与底色由 #app.is-capsule 承担 */
 }
 
 .capsule:active {
   cursor: grabbing;
-}
-
-.capsule.pinned {
-  box-shadow:
-    0 8px 28px rgba(20, 40, 30, 0.16),
-    0 0 0 1.5px rgba(47, 191, 113, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 .health-dot {
@@ -126,37 +123,37 @@ const healthTone = computed(() => {
   border-radius: 50%;
   background: #b0b5b2;
   flex-shrink: 0;
-  margin-right: 6px;
+  margin-right: 4px;
 }
 
 .health-dot[data-tone='excellent'],
 .health-dot[data-tone='good'] {
   background: var(--accent);
-  box-shadow: 0 0 0 3px rgba(47, 191, 113, 0.18);
+  box-shadow: 0 0 0 3px rgba(47, 191, 113, 0.16);
 }
 
 .health-dot[data-tone='watch'] {
   background: var(--warn);
-  box-shadow: 0 0 0 3px rgba(232, 163, 23, 0.18);
+  box-shadow: 0 0 0 3px rgba(232, 163, 23, 0.16);
 }
 
 .health-dot[data-tone='critical'] {
   background: var(--bad);
-  box-shadow: 0 0 0 3px rgba(229, 72, 77, 0.18);
+  box-shadow: 0 0 0 3px rgba(229, 72, 77, 0.16);
 }
 
 .metric {
-  min-width: 48px;
+  min-width: 52px;
   text-align: center;
-  padding: 0 4px;
+  padding: 0 2px;
 }
 
 .metric.net {
-  min-width: 58px;
+  min-width: 88px;
 }
 
 .v {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.15;
@@ -170,6 +167,28 @@ const healthTone = computed(() => {
 
 .metric[data-tone='bad'] .v {
   color: var(--bad);
+}
+
+.v.tiny {
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.v.tiny.upv {
+  color: var(--accent);
+}
+
+.dir.down {
+  color: var(--info);
+  margin-right: 2px;
+  font-size: 10px;
+}
+
+.dir.up {
+  color: var(--accent);
+  margin-right: 2px;
+  font-size: 10px;
 }
 
 .k {
@@ -198,7 +217,7 @@ const healthTone = computed(() => {
 
 .sep {
   width: 1px;
-  height: 18px;
+  height: 20px;
   background: rgba(20, 40, 30, 0.1);
   margin: 0 2px;
   flex-shrink: 0;
@@ -206,14 +225,14 @@ const healthTone = computed(() => {
 
 .actions {
   display: flex;
-  gap: 2px;
-  margin-left: 6px;
+  gap: 0;
+  margin-left: 4px;
   flex-shrink: 0;
 }
 
 .icon-btn {
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   border: none;
   border-radius: 50%;
   background: transparent;
@@ -240,17 +259,17 @@ const healthTone = computed(() => {
 
 .pause-tag {
   position: absolute;
-  right: 70px;
-  top: 4px;
-  font-size: 8px;
+  right: 72px;
+  top: 6px;
+  font-size: 9px;
   font-weight: 700;
   color: var(--warn);
   background: var(--warn-soft);
-  padding: 1px 5px;
+  padding: 1px 6px;
   border-radius: 999px;
 }
 
-.capsule {
-  position: relative;
+.capsule.pinned .health-dot {
+  /* 钉住时用健康点已有光圈，不再叠窗口描边 */
 }
 </style>

@@ -1,13 +1,36 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { invoke } from '@tauri-apps/api/core'
+import { clampOpacity, saveUiPrefs, type UiPrefs } from '../lib/prefs'
 
-const emit = defineEmits<{ close: [] }>()
+const props = defineProps<{
+  prefs: UiPrefs
+}>()
+
+const emit = defineEmits<{
+  close: []
+  prefs: [prefs: UiPrefs]
+}>()
 
 const autostart = ref(false)
 const autostartBusy = ref(false)
 const version = ref('0.1.0')
 const error = ref('')
+const opacity = ref(props.prefs.opacity)
+
+watch(
+  () => props.prefs,
+  (p) => {
+    opacity.value = p.opacity
+  },
+  { deep: true },
+)
+
+watch(opacity, (v) => {
+  const next = { opacity: clampOpacity(v) }
+  saveUiPrefs(next)
+  emit('prefs', next)
+})
 
 onMounted(async () => {
   try {
@@ -45,6 +68,11 @@ async function quitApp() {
   }
 }
 
+function resetOpacity() {
+  opacity.value = 0.92
+}
+
+const opacityPct = computed(() => `${Math.round(opacity.value * 100)}%`)
 const year = computed(() => new Date().getFullYear())
 </script>
 
@@ -62,6 +90,31 @@ const year = computed(() => new Date().getFullYear())
       </div>
       <input type="checkbox" :checked="autostart" :disabled="autostartBusy" @change="toggleAutostart" />
     </label>
+
+    <div class="row static col">
+      <div class="row-top">
+        <div>
+          <div class="label">面板透明度</div>
+          <div class="hint">面板与桌面胶囊的底色不透明度</div>
+        </div>
+        <span class="badge">{{ opacityPct }}</span>
+      </div>
+      <div class="slider-row">
+        <input
+          v-model.number="opacity"
+          class="slider"
+          type="range"
+          min="0.45"
+          max="1"
+          step="0.01"
+        />
+        <button class="ghost" type="button" @click="resetOpacity">默认</button>
+      </div>
+      <div class="slider-marks">
+        <span>更透</span>
+        <span>更实</span>
+      </div>
+    </div>
 
     <div class="row static">
       <div>
@@ -130,15 +183,28 @@ const year = computed(() => new Date().getFullYear())
   justify-content: space-between;
   gap: 12px;
   padding: 12px 14px;
-  border-radius: var(--radius);
-  background: var(--bg-card-strong);
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   box-shadow: var(--shadow);
   cursor: pointer;
 }
 
 .row.static {
   cursor: default;
+}
+
+.row.col {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.row-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 .label {
@@ -160,6 +226,43 @@ const year = computed(() => new Date().getFullYear())
   background: var(--accent-soft);
   padding: 2px 8px;
   border-radius: 999px;
+  font-variant-numeric: tabular-nums;
+}
+
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.slider {
+  flex: 1;
+  accent-color: var(--accent);
+  height: 4px;
+  cursor: pointer;
+}
+
+.ghost {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-dim);
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.ghost:hover {
+  color: var(--text);
+  background: rgba(20, 40, 30, 0.04);
+}
+
+.slider-marks {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--text-dim);
 }
 
 input[type='checkbox'] {
