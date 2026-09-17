@@ -26,6 +26,27 @@ const error = ref('')
 const opacity = ref(props.prefs.opacity)
 const theme = ref<ThemeMode>(props.prefs.theme)
 
+const updateChecking = ref(false)
+const updateMessage = ref('')
+const updateAvailable = ref(false)
+const latestVersion = ref('')
+const releaseUrl = ref('')
+const downloadUrl = ref('')
+const downloadName = ref('')
+const releaseNotes = ref('')
+
+interface UpdateCheckResult {
+  currentVersion: string
+  latestVersion: string | null
+  updateAvailable: boolean
+  releaseName: string | null
+  releaseNotes: string | null
+  releaseUrl: string | null
+  downloadUrl: string | null
+  downloadName: string | null
+  message: string
+}
+
 watch(
   () => props.prefs,
   (p) => {
@@ -78,6 +99,39 @@ async function toggleAutostart() {
 async function quitApp() {
   try {
     await invoke('quit_app')
+  } catch (e) {
+    error.value = String(e)
+  }
+}
+
+/** 手动检查 AtomGit 最新 Release */
+async function checkForUpdates() {
+  if (updateChecking.value) return
+  updateChecking.value = true
+  error.value = ''
+  updateMessage.value = '正在检查更新…'
+  try {
+    const r = await invoke<UpdateCheckResult>('check_update')
+    updateMessage.value = r.message
+    updateAvailable.value = r.updateAvailable
+    latestVersion.value = r.latestVersion ?? ''
+    releaseUrl.value = r.releaseUrl ?? ''
+    downloadUrl.value = r.downloadUrl ?? ''
+    downloadName.value = r.downloadName ?? ''
+    releaseNotes.value = (r.releaseNotes ?? '').slice(0, 280)
+  } catch (e) {
+    updateMessage.value = ''
+    error.value = String(e)
+  } finally {
+    updateChecking.value = false
+  }
+}
+
+async function openRelease() {
+  const url = downloadUrl.value || releaseUrl.value
+  if (!url) return
+  try {
+    await invoke('open_external', { url })
   } catch (e) {
     error.value = String(e)
   }
@@ -173,10 +227,35 @@ const year = computed(() => new Date().getFullYear())
       <span class="badge">自动</span>
     </div>
 
+    <div class="row static col">
+      <div class="row-top">
+        <div>
+          <div class="label">软件更新</div>
+          <div class="hint">从 AtomGit Release 手动检查 · 当前 v{{ version }}</div>
+        </div>
+        <button class="primary" type="button" :disabled="updateChecking" @click="checkForUpdates">
+          {{ updateChecking ? '检查中…' : '检查更新' }}
+        </button>
+      </div>
+      <p v-if="updateMessage" class="update-msg" :data-ok="updateAvailable ? '1' : '0'">
+        {{ updateMessage }}
+      </p>
+      <p v-if="latestVersion" class="update-meta">远端 {{ latestVersion }}<template v-if="downloadName"> · {{ downloadName }}</template></p>
+      <p v-if="releaseNotes" class="update-notes">{{ releaseNotes }}</p>
+      <button
+        v-if="updateAvailable && (downloadUrl || releaseUrl)"
+        class="primary wide"
+        type="button"
+        @click="openRelease"
+      >
+        {{ downloadUrl ? '下载安装包' : '打开 Release 页' }}
+      </button>
+    </div>
+
     <div class="row static">
       <div>
         <div class="label">隐私</div>
-        <div class="hint">本机自用 · 无云同步 · 无遥测 · 不记键鼠内容</div>
+        <div class="hint">本机自用 · 无云同步 · 无遥测 · 不记键鼠内容 · 更新检查仅访问 AtomGit API</div>
       </div>
     </div>
 
@@ -346,6 +425,54 @@ const year = computed(() => new Date().getFullYear())
 .ghost:hover {
   color: var(--text);
   background: var(--hover);
+}
+
+.primary {
+  border: 1px solid transparent;
+  background: var(--accent);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 650;
+  border-radius: 9px;
+  padding: 7px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.primary:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.primary.wide {
+  width: 100%;
+  margin-top: 2px;
+}
+
+.primary:not(:disabled):hover {
+  filter: brightness(1.05);
+}
+
+.update-msg {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-mid);
+}
+
+.update-msg[data-ok='1'] {
+  color: var(--warn);
+}
+
+.update-meta,
+.update-notes {
+  font-size: 11px;
+  color: var(--text-dim);
+  line-height: 1.45;
+}
+
+.update-notes {
+  max-height: 4.2em;
+  overflow: hidden;
 }
 
 .slider-marks {

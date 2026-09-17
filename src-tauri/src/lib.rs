@@ -4,6 +4,7 @@ mod autostart;
 mod panel;
 mod sampler;
 mod tray;
+mod update;
 
 pub const PANEL_LABEL: &str = "panel";
 
@@ -31,7 +32,9 @@ pub fn run() {
             app_version,
             quit_app,
             get_sampler_paused,
-            set_sampler_paused
+            set_sampler_paused,
+            check_update,
+            open_external
         ])
         .setup(|app| {
             let window = app
@@ -62,6 +65,26 @@ fn set_autostart(enabled: bool) -> tauri::Result<()> {
 #[tauri::command]
 fn app_version() -> String {
     env!("CARGO_PKG_VERSION").to_string()
+}
+
+/// 手动检查 AtomGit 最新 Release
+#[tauri::command]
+async fn check_update() -> update::UpdateCheckResult {
+    update::check_update(env!("CARGO_PKG_VERSION").to_string()).await
+}
+
+/// 用系统默认浏览器打开 https 链接（下载/Release 页）
+#[tauri::command]
+fn open_external(url: String) -> Result<(), String> {
+    let trimmed = url.trim();
+    if !(trimmed.starts_with("https://") || trimmed.starts_with("http://")) {
+        return Err("仅允许打开 http(s) 链接".into());
+    }
+    std::process::Command::new("cmd")
+        .args(["/C", "start", "", trimmed])
+        .spawn()
+        .map(|_| ())
+        .map_err(|e| e.to_string())
 }
 
 #[tauri::command]
