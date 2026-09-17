@@ -9,6 +9,7 @@ defineProps<{
 const emit = defineEmits<{
   pin: []
   settings: []
+  collapse: []
   drag: []
 }>()
 </script>
@@ -29,6 +30,17 @@ const emit = defineEmits<{
       </div>
     </div>
     <div class="actions">
+      <button
+        class="icon-btn"
+        title="收起为桌面胶囊"
+        @click.stop="emit('collapse')"
+        @mousedown.stop
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="8" width="20" height="8" rx="4" />
+          <path d="M8 12h8" />
+        </svg>
+      </button>
       <button
         class="icon-btn"
         :class="{ active: settings }"

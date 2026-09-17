@@ -52,6 +52,17 @@ body,
   backdrop-filter: blur(28px) saturate(1.2);
 }
 
+/* 胶囊模式：去掉外层 padding/圆角，交给 CapsuleView 自己画 */
+#app:has(> .capsule) {
+  padding: 0;
+  gap: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  border-radius: 0;
+}
+
 /* 滚动条 */
 ::-webkit-scrollbar {
   width: 4px;
