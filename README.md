@@ -7,6 +7,15 @@
 
 **v0.1 已可安装使用**：NSIS / MSI 安装包见下方「快速开始」。
 
+## 界面预览
+
+| 完整监控面板 | 桌面胶囊 |
+| :---: | :---: |
+| <img src="docs/assets/panel.png" alt="WinGauge 完整面板：设备头、健康度、CPU 温度与每核负载、内存、风扇" width="320" /> | <img src="docs/assets/capsule.png" alt="WinGauge 桌面胶囊：CPU/内存/上下行与健康点" width="360" /> |
+| 点托盘弹出，健康度总分 + 卡片流 | 收起为常驻横条，一眼看关键指标 |
+
+截图取自本机实机（Windows 11 · Lenovo Legion），非设计稿。
+
 ---
 
 ## 为什么做
@@ -192,6 +201,7 @@ WinGauge/
 ├── frontend/                  # Vue 3 + Vite + TS
 │   └── src/  App.vue components/ lib/metrics.ts
 ├── docs/                      # W0 实测笔记 / W1 完成报告
+│   └── assets/                # README 截图（panel / capsule）
 └── probe/                     # Windows 采集能力探测脚本
 ```
 
