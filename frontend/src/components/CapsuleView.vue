@@ -75,21 +75,33 @@ const healthTone = computed(() => {
         class="icon-btn"
         :class="{ active: pinned }"
         :title="pinned ? '取消钉住' : '钉住'"
+        :aria-label="pinned ? '取消钉住' : '钉住'"
+        :aria-pressed="pinned"
         @click.stop="emit('pin')"
         @mousedown.stop
       >
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M9 4h6l-1 7 4 3-2 2-4-3-4 3-2-2 4-3z" />
+        <svg v-if="pinned" width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M16 9V4h1a1 1 0 1 0 0-2H7a1 1 0 1 0 0 2h1v5c0 1.66-1.34 3-3 3v2h5.97v7l1 1 1-1v-7H19v-2c-1.66 0-3-1.34-3-3z" />
+        </svg>
+        <svg v-else width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 4h6" />
+          <path d="M10 4v5.5L6.2 11.8A2 2 0 0 0 5.2 13.6L5.4 15a1.8 1.8 0 0 0 1.1 1.6L9 17.8V20" />
+          <path d="M14 4v5.5l3.8 2.3a2 2 0 0 1 1 1.8L18.6 15a1.8 1.8 0 0 1-1.1 1.6L15 17.8V20" />
+          <path d="M8.2 16.2 5 19.5" />
         </svg>
       </button>
+      <!-- 胶囊 → 完整面板：与头栏收起是同一按钮语义 -->
       <button
         class="icon-btn expand"
         title="展开完整面板"
+        aria-label="展开完整面板"
         @click.stop="emit('expand')"
         @mousedown.stop
       >
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5" />
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2.5" y="6.5" width="19" height="11" rx="3" />
+          <path d="M12 15.5v-3.2" />
+          <path d="M9.8 13.8 12 16l2.2-2.2" />
         </svg>
       </button>
     </div>
@@ -231,8 +243,8 @@ const healthTone = computed(() => {
 }
 
 .icon-btn {
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   border: none;
   border-radius: 50%;
   background: transparent;

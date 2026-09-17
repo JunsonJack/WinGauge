@@ -272,7 +272,7 @@ function quit() {
       :subtitle="paused ? '采样已暂停' : isSettings ? '偏好设置' : '实时监控'"
       @pin="togglePin"
       @settings="toggleSettings"
-      @collapse="collapseToCapsule"
+      @toggle-form="collapseToCapsule"
       @drag="startNativeDrag"
     />
 
